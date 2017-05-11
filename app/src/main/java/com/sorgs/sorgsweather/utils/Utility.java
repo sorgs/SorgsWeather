@@ -46,8 +46,7 @@ public class Utility {
         if (!TextUtils.isEmpty(response)) {
             try {
                 JSONArray jsonCity = new JSONArray(response);
-                //把之前的旧数据清空
-                DataSupport.deleteAll(City.class);
+
                 for (int i = 0; i < jsonCity.length(); i++) {
                     JSONObject jsonObject = jsonCity.getJSONObject(i);
                     City city = new City();
@@ -72,7 +71,6 @@ public class Utility {
         if (!TextUtils.isEmpty(response)) {
             try {
                 JSONArray jsonCounty = new JSONArray(response);
-                DataSupport.deleteAll(County.class);
                 for (int i = 0; i < jsonCounty.length(); i++) {
                     JSONObject jsonObject = jsonCounty.getJSONObject(i);
                     County county = new County();
