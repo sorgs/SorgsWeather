@@ -5,6 +5,9 @@ import android.os.Bundle;
 
 import com.sorgs.sorgsweather.R;
 
+import org.litepal.LitePal;
+import org.litepal.LitePalApplication;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

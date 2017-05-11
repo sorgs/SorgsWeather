@@ -1,9 +1,0 @@
-<litepal>
-    <dbname value="Sorgs_weather"/>
-    <version valude="1"/>
-    <list>
-        <mapping class="com.sorgs.sorgsweather.db.City"/>
-        <mapping class="com.sorgs.sorgsweather.db.Province"/>
-        <mapping class="com.sorgs.sorgsweather.db.County"/>
-    </list>
-</litepal>

@@ -23,4 +23,6 @@ public class City extends DataSupport {
      * 当前市对应所属省的id
      */
     public int provinceId;
+
 }
+
