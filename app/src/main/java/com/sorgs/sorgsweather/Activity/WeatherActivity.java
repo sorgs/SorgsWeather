@@ -1,15 +1,19 @@
 package com.sorgs.sorgsweather.Activity;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.sorgs.sorgsweather.Http.OkHttp;
 import com.sorgs.sorgsweather.R;
 import com.sorgs.sorgsweather.domian.WeatherJson;
@@ -35,11 +39,18 @@ public class WeatherActivity extends AppCompatActivity {
     private ScrollView weather_layout;
     private TextView title_city, title_update_time, degree_text, weather_info_text, aqi_text, pm25_text, comfort_text, car_wash_text, sport_text;
     private LinearLayout forecast_layout;
+    private ImageView pic_img;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            View view = getWindow().getDecorView();
+            view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
 
         initUI();
 
@@ -60,6 +71,43 @@ public class WeatherActivity extends AppCompatActivity {
             weather_layout.setVisibility(View.INVISIBLE);
             requestWeather(weatherId);
         }
+
+        //获取图片的缓存
+        String pic = Sputils.getString(getApplication(), Constant.PIC, null);
+        if (pic != null) {
+            //设置图片
+            Glide.with(this).load(pic).into(pic_img);
+        }
+
+        //再去服务器请求
+        loadBingPic();
+
+    }
+
+    /**
+     * 请求背景图片
+     */
+    private void loadBingPic() {
+        OkHttp.sendOkHttpRequest(Constant.PIC_URL, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String pic = response.body().string();
+                Log.i(TAG, "pic: " + pic);
+                //进行缓存
+                Sputils.putString(getApplication(), Constant.PIC, pic);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(getApplication()).load(pic).into(pic_img);
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -208,5 +256,6 @@ public class WeatherActivity extends AppCompatActivity {
         comfort_text = (TextView) findViewById(R.id.comfort_text);
         car_wash_text = (TextView) findViewById(R.id.car_wash_text);
         sport_text = (TextView) findViewById(R.id.sport_text);
+        pic_img = (ImageView) findViewById(R.id.pic_img);
     }
 }

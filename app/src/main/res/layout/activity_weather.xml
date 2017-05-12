@@ -4,6 +4,13 @@
              android:layout_height="match_parent"
              android:background="@color/colorPrimary">
 
+    <ImageView
+        android:id="@+id/pic_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
+    <!--scaleType缩放比 centerCrop：按比例扩大图片的size居中显示，使得图片长(宽)等于或大于View的长(宽) -->
+
     <ScrollView
         android:id="@+id/weather_layout"
         android:layout_width="match_parent"
@@ -11,9 +18,11 @@
         android:overScrollMode="never"
         android:scrollbars="none">
 
+        <!--fitsSystemWindows 预留状态栏空间-->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
             android:orientation="vertical">
 
             <include layout="@layout/title"/>

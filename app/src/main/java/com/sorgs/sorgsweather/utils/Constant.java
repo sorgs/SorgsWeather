@@ -25,4 +25,14 @@ public class Constant {
      * 天气服务器key
      */
     public static final String WEATHER_KEY = "&key=6654a43435694d8e922377f3204d3756";
+
+    /**
+     * 背景图片的url地址
+     */
+    public static final String PIC_URL = "http://guolin.tech/api/bing_pic";
+
+    /**
+     * 背景图片缓存的key
+     */
+    public static final String PIC = "pic";
 }
