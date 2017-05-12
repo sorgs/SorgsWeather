@@ -3,15 +3,19 @@ package com.sorgs.sorgsweather.utils;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.sorgs.sorgsweather.db.City;
 import com.sorgs.sorgsweather.db.County;
 import com.sorgs.sorgsweather.db.Province;
+import com.sorgs.sorgsweather.domian.WeatherJson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
+import java.lang.reflect.Type;
 import java.util.List;
 
 public class Utility {
@@ -87,5 +91,25 @@ public class Utility {
         }
 
         return false;
+    }
+
+
+    /**
+     * 将返回的json数据解析成Weather实体类
+     *
+     * @param response 传入的json
+     * @return 返回weather实体类
+     */
+    public static WeatherJson handleWeatherResponse(String response) {
+
+        try {
+            Gson gson = new Gson();
+            return gson.fromJson(response, new TypeToken<WeatherJson>() {
+            }.getType());
+        } catch (Exception e) {
+            Log.i(TAG, "Json解析出错");
+            e.printStackTrace();
+        }
+        return null;
     }
 }
