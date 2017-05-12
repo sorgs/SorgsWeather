@@ -8,7 +8,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -23,6 +22,7 @@ import com.sorgs.sorgsweather.Http.OkHttp;
 import com.sorgs.sorgsweather.R;
 import com.sorgs.sorgsweather.domian.WeatherJson;
 import com.sorgs.sorgsweather.utils.Constant;
+import com.sorgs.sorgsweather.utils.LogUtils;
 import com.sorgs.sorgsweather.utils.Sputils;
 import com.sorgs.sorgsweather.utils.Utility;
 
@@ -81,7 +81,7 @@ public class WeatherActivity extends AppCompatActivity {
             for (WeatherJson.HeWeather5Bean heWeatherBean :
                     weatherJson.getHeWeather5()) {
                 mWeatherId = heWeatherBean.getBasic().getCity();
-                Log.i(TAG, "缓存的城市: " + mWeatherId);
+                LogUtils.i(TAG, "缓存的城市: " + mWeatherId);
             }
             showWeatherInfo(weatherJson);
         } else {
@@ -164,22 +164,22 @@ public class WeatherActivity extends AppCompatActivity {
             if ("ok".equals(heWeatherBean.getStatus())) {
                 //设置城市名字
                 String cityName = heWeatherBean.getBasic().getCity();
-                Log.i(TAG, "cityName: " + cityName);
+                LogUtils.i(TAG, "cityName: " + cityName);
                 title_city.setText(cityName);
 
                 //设置最后更新时间
                 String upTime = heWeatherBean.getBasic().getUpdate().getLoc().split(" ")[1];
-                Log.i(TAG, "upTime: " + upTime);
+                LogUtils.i(TAG, "upTime: " + upTime);
                 title_update_time.setText(upTime);
 
                 //设置温度
                 String temperature = heWeatherBean.getNow().getTmp() + "℃";
-                Log.i(TAG, "temperature: " + temperature);
+                LogUtils.i(TAG, "temperature: " + temperature);
                 degree_text.setText(temperature);
 
                 //设置天气
                 String weatherInfo = heWeatherBean.getNow().getCond().getTxt();
-                Log.i(TAG, "weatherInfo: " + weatherInfo);
+                LogUtils.i(TAG, "weatherInfo: " + weatherInfo);
                 weather_info_text.setText(weatherInfo);
 
 
@@ -195,7 +195,7 @@ public class WeatherActivity extends AppCompatActivity {
 
                     //预报的日期
                     String date = dailyForecastBean.getDate();
-                    Log.i(TAG, "date: " + date);
+                    LogUtils.i(TAG, "date: " + date);
                     date_text.setText(date);
 
                     //预气日期的天气
@@ -204,12 +204,12 @@ public class WeatherActivity extends AppCompatActivity {
 
                     //预报日期最高气温
                     String dateMax = dailyForecastBean.getTmp().getMax();
-                    Log.i(TAG, "dateMax: " + dateMax);
+                    LogUtils.i(TAG, "dateMax: " + dateMax);
                     max_text.setText(dateMax);
 
                     //预报日期最低气温
                     String dateMin = dailyForecastBean.getTmp().getMin();
-                    Log.i(TAG, "dateMin: " + dateMin);
+                    LogUtils.i(TAG, "dateMin: " + dateMin);
                     min_text.setText(dateMin);
 
                     //设置上去
@@ -219,28 +219,28 @@ public class WeatherActivity extends AppCompatActivity {
                 if (heWeatherBean.getAqi() != null) {
                     //aqi的值
                     String aiq = heWeatherBean.getAqi().getCity().getAqi();
-                    Log.i(TAG, "aiq: " + aiq);
+                    LogUtils.i(TAG, "aiq: " + aiq);
                     aqi_text.setText(aiq);
 
                     //pm2.5
                     String PM = heWeatherBean.getAqi().getCity().getPm25();
-                    Log.i(TAG, "PM: " + PM);
+                    LogUtils.i(TAG, "PM: " + PM);
                     pm25_text.setText(PM);
                 }
 
                 //舒适度
                 String comfor = heWeatherBean.getSuggestion().getComf().getTxt();
-                Log.i(TAG, "comfor: " + comfor);
+                LogUtils.i(TAG, "comfor: " + comfor);
                 comfort_text.setText(comfor);
 
                 //洗车指数
                 String CarWash = heWeatherBean.getSuggestion().getCw().getTxt();
-                Log.i(TAG, "CarWash: " + CarWash);
+                LogUtils.i(TAG, "CarWash: " + CarWash);
                 car_wash_text.setText(CarWash);
 
                 //运动建议
                 String sport = heWeatherBean.getSuggestion().getSport().getTxt();
-                Log.i(TAG, "sport: " + sport);
+                LogUtils.i(TAG, "sport: " + sport);
                 sport_text.setText(sport);
 
                 weather_layout.setVisibility(View.VISIBLE);
