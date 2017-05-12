@@ -11,32 +11,52 @@
         android:scaleType="centerCrop"/>
     <!--scaleType缩放比 centerCrop：按比例扩大图片的size居中显示，使得图片长(宽)等于或大于View的长(宽) -->
 
-    <ScrollView
-        android:id="@+id/weather_layout"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:overScrollMode="never"
-        android:scrollbars="none">
+        android:layout_height="match_parent">
 
-        <!--fitsSystemWindows 预留状态栏空间-->
-        <LinearLayout
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <include layout="@layout/title"/>
+            <ScrollView
+                android:id="@+id/weather_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:scrollbars="none">
 
-            <include layout="@layout/now"/>
+                <!--fitsSystemWindows 预留状态栏空间-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fitsSystemWindows="true"
+                    android:orientation="vertical">
 
-            <include layout="@layout/forecast"/>
+                    <include layout="@layout/title"/>
 
-            <include layout="@layout/aqi"/>
+                    <include layout="@layout/now"/>
 
-            <include layout="@layout/suggest"/>
+                    <include layout="@layout/forecast"/>
 
-        </LinearLayout>
+                    <include layout="@layout/aqi"/>
 
-    </ScrollView>
+                    <include layout="@layout/suggest"/>
+
+                </LinearLayout>
+
+            </ScrollView>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <fragment
+            android:id="@+id/choose_area_fragment"
+            android:name="com.sorgs.sorgsweather.Fragment.ChooseAreaFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"/>
+
+    </android.support.v4.widget.DrawerLayout>
 
 </FrameLayout>

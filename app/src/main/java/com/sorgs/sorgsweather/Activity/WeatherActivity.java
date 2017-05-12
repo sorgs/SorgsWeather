@@ -3,10 +3,15 @@ package com.sorgs.sorgsweather.Activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -40,6 +45,10 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView title_city, title_update_time, degree_text, weather_info_text, aqi_text, pm25_text, comfort_text, car_wash_text, sport_text;
     private LinearLayout forecast_layout;
     private ImageView pic_img;
+    public DrawerLayout drawer_layout;
+    private Button nav_button;
+    public SwipeRefreshLayout swipe_refresh;
+    private String mWeatherId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,58 +63,54 @@ public class WeatherActivity extends AppCompatActivity {
 
         initUI();
 
+        getCache();
+
         initData();
     }
 
-    private void initData() {
+    /**
+     * 获取是否有缓存
+     */
+    private void getCache() {
         //获取缓存
         String WeatherCache = Sputils.getString(getApplicationContext(), Constant.WEATHER, null);
-        if (WeatherCache != null) {
+        if (!TextUtils.isEmpty(WeatherCache)) {
             //存在缓存，就直接去解析
             WeatherJson weatherJson = Utility.handleWeatherResponse(WeatherCache);
+            assert weatherJson != null;
+            for (WeatherJson.HeWeather5Bean heWeatherBean :
+                    weatherJson.getHeWeather5()) {
+                mWeatherId = heWeatherBean.getBasic().getCity();
+                Log.i(TAG, "缓存的城市: " + mWeatherId);
+            }
             showWeatherInfo(weatherJson);
         } else {
             //无缓存的时候去服务器获取
-            String weatherId = getIntent().getStringExtra("weather_id");
+            mWeatherId = getIntent().getStringExtra("weather_id");
+
             //请求的时候，暂时隐藏
             weather_layout.setVisibility(View.INVISIBLE);
-            requestWeather(weatherId);
+            requestWeather(mWeatherId);
         }
-
-        //获取图片的缓存
-        String pic = Sputils.getString(getApplication(), Constant.PIC, null);
-        if (pic != null) {
-            //设置图片
-            Glide.with(this).load(pic).into(pic_img);
-        }
-
-        //再去服务器请求
-        loadBingPic();
-
     }
 
-    /**
-     * 请求背景图片
-     */
-    private void loadBingPic() {
-        OkHttp.sendOkHttpRequest(Constant.PIC_URL, new Callback() {
+    private void initData() {
+        swipe_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
+            public void onRefresh() {
+                getCache();
+                requestWeather(mWeatherId);
             }
+        });
 
+        //设置图片
+        Glide.with(this).load(Constant.PIC_URL).dontAnimate().into(pic_img);
+
+        //点击切换城市
+        nav_button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String pic = response.body().string();
-                Log.i(TAG, "pic: " + pic);
-                //进行缓存
-                Sputils.putString(getApplication(), Constant.PIC, pic);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Glide.with(getApplication()).load(pic).into(pic_img);
-                    }
-                });
+            public void onClick(View v) {
+                drawer_layout.openDrawer(GravityCompat.START);
             }
         });
     }
@@ -115,7 +120,7 @@ public class WeatherActivity extends AppCompatActivity {
      *
      * @param weatherId 传入的城市ID
      */
-    private void requestWeather(final String weatherId) {
+    public void requestWeather(final String weatherId) {
         OkHttp.sendOkHttpRequest(Constant.WEATHER_URL + weatherId + Constant.WEATHER_KEY, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -123,6 +128,7 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         Toast.makeText(getApplicationContext(), "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                        swipe_refresh.setRefreshing(false);
                     }
                 });
             }
@@ -135,9 +141,12 @@ public class WeatherActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         //缓存Json数据
-                        if (string != null)
-                            Sputils.putString(getApplicationContext(), "weather", string);
-                        showWeatherInfo(weatherJson);
+                        if (string != null) {
+                            Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
+                            showWeatherInfo(weatherJson);
+                            Glide.with(getApplication()).load(Constant.PIC_URL).dontAnimate().into(pic_img);
+                        }
+                        swipe_refresh.setRefreshing(false);
                     }
                 });
             }
@@ -175,7 +184,7 @@ public class WeatherActivity extends AppCompatActivity {
 
 
                 //清除之前数据
-                //forecast_layout.removeAllViews();
+                forecast_layout.removeAllViews();
                 for (WeatherJson.HeWeather5Bean.DailyForecastBean dailyForecastBean :
                         heWeatherBean.getDaily_forecast()) {
                     View view = LayoutInflater.from(this).inflate(R.layout.forecast_item, forecast_layout, false);
@@ -257,5 +266,11 @@ public class WeatherActivity extends AppCompatActivity {
         car_wash_text = (TextView) findViewById(R.id.car_wash_text);
         sport_text = (TextView) findViewById(R.id.sport_text);
         pic_img = (ImageView) findViewById(R.id.pic_img);
+        drawer_layout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        nav_button = (Button) findViewById(R.id.nav_button);
+        swipe_refresh = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+        swipe_refresh.setColorSchemeResources(R.color.colorPrimary);
     }
+
+
 }
