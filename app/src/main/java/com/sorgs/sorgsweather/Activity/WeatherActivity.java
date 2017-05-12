@@ -1,5 +1,6 @@
 package com.sorgs.sorgsweather.Activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.sorgs.sorgsweather.Http.OkHttp;
 import com.sorgs.sorgsweather.R;
 import com.sorgs.sorgsweather.domian.WeatherJson;
+import com.sorgs.sorgsweather.service.AutoUpdateService;
 import com.sorgs.sorgsweather.utils.Constant;
 import com.sorgs.sorgsweather.utils.LogUtils;
 import com.sorgs.sorgsweather.utils.Sputils;
@@ -72,7 +74,7 @@ public class WeatherActivity extends AppCompatActivity {
      * 获取是否有缓存
      */
     private void getCache() {
-        //获取缓存
+        //获取数据缓存
         String WeatherCache = Sputils.getString(getApplicationContext(), Constant.WEATHER, null);
         if (!TextUtils.isEmpty(WeatherCache)) {
             //存在缓存，就直接去解析
@@ -92,6 +94,15 @@ public class WeatherActivity extends AppCompatActivity {
             weather_layout.setVisibility(View.INVISIBLE);
             requestWeather(mWeatherId);
         }
+
+        //获取图片缓存
+        String pic = Sputils.getString(getApplication(), Constant.PIC, null);
+        if (TextUtils.isEmpty(pic)) {
+            loacdPic();
+        } else {
+            //设置图片
+            Glide.with(getApplication()).load(pic).into(pic_img);
+        }
     }
 
     private void initData() {
@@ -103,14 +114,34 @@ public class WeatherActivity extends AppCompatActivity {
             }
         });
 
-        //设置图片
-        Glide.with(this).load(Constant.PIC_URL).dontAnimate().into(pic_img);
-
         //点击切换城市
         nav_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawer_layout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        //开启后台更跟新服务
+        startService(new Intent(this, AutoUpdateService.class));
+    }
+
+    private void loacdPic() {
+        OkHttp.sendOkHttpRequest(Constant.PIC_URL, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String pic = response.body().string();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Glide.with(getApplication()).load(pic).into(pic_img);
+                    }
+                });
             }
         });
     }
@@ -144,7 +175,7 @@ public class WeatherActivity extends AppCompatActivity {
                         if (string != null) {
                             Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
                             showWeatherInfo(weatherJson);
-                            Glide.with(getApplication()).load(Constant.PIC_URL).dontAnimate().into(pic_img);
+                            loacdPic();
                         }
                         swipe_refresh.setRefreshing(false);
                     }
@@ -168,9 +199,9 @@ public class WeatherActivity extends AppCompatActivity {
                 title_city.setText(cityName);
 
                 //设置最后更新时间
-                String upTime = heWeatherBean.getBasic().getUpdate().getLoc().split(" ")[1];
+                String upTime = heWeatherBean.getBasic().getUpdate().getLoc().substring(5);
                 LogUtils.i(TAG, "upTime: " + upTime);
-                title_update_time.setText(upTime);
+                title_update_time.setText("更新时间: " + upTime);
 
                 //设置温度
                 String temperature = heWeatherBean.getNow().getTmp() + "℃";
@@ -196,21 +227,21 @@ public class WeatherActivity extends AppCompatActivity {
                     //预报的日期
                     String date = dailyForecastBean.getDate();
                     LogUtils.i(TAG, "date: " + date);
-                    date_text.setText(date);
+                    date_text.setText("日期:" + date);
 
                     //预气日期的天气
                     String dateWeather = dailyForecastBean.getCond().getTxt_d();
-                    info_text.setText(dateWeather);
+                    info_text.setText("天气:" + dateWeather);
 
                     //预报日期最高气温
                     String dateMax = dailyForecastBean.getTmp().getMax();
                     LogUtils.i(TAG, "dateMax: " + dateMax);
-                    max_text.setText(dateMax);
+                    max_text.setText("最高:" + dateMax + "℃");
 
                     //预报日期最低气温
                     String dateMin = dailyForecastBean.getTmp().getMin();
                     LogUtils.i(TAG, "dateMin: " + dateMin);
-                    min_text.setText(dateMin);
+                    min_text.setText("最低:" + dateMin + "℃");
 
                     //设置上去
                     forecast_layout.addView(view);

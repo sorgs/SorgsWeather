@@ -38,7 +38,7 @@ public class MyApplication extends Application {
                 //在获取到了未捕获的异常后,处理的方法
                 e.printStackTrace();
                 LogUtils.i(TAG, "捕获到了一个程序的异常");
-                //将捕获的异常存储到sd卡中
+                //将捕获的异常存储到 sd卡中
                 String path = Environment.getExternalStorageDirectory().getAbsoluteFile() + File.separator
                         + "Sorgs_Weather" + File.separator + "error.log";
                 File file = new File(path);

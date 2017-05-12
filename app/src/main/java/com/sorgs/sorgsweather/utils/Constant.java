@@ -29,5 +29,11 @@ public class Constant {
     /**
      * 背景图片的url地址
      */
-    public static final String PIC_URL = "https://api.i-meto.com/bing";
+    public static final String PIC_URL = "http://guolin.tech/api/bing_pic";
+
+    /**
+     * 背景图片的key
+     */
+    public static final String PIC = "pic";
+
 }

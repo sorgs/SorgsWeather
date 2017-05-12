@@ -21,6 +21,8 @@
         </activity>
 
         <activity android:name=".Activity.WeatherActivity"/>
+
+        <service android:name=".service.AutoUpdateService"/>
     </application>
 
 </manifest>
