@@ -1,84 +1,176 @@
 package com.sorgs.sorgsweather.Activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.widget.Toast;
 
+import com.sorgs.sorgsweather.Http.OkHttp;
 import com.sorgs.sorgsweather.R;
+import com.sorgs.sorgsweather.domian.WeatherJson;
 import com.sorgs.sorgsweather.utils.Constant;
 import com.sorgs.sorgsweather.utils.LogUtils;
 import com.sorgs.sorgsweather.utils.Sputils;
+import com.sorgs.sorgsweather.utils.Utility;
 
-import org.litepal.LitePal;
-import org.litepal.LitePalApplication;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.weyye.hipermission.HiPermission;
-import me.weyye.hipermission.PermissionCallback;
-import me.weyye.hipermission.PermissonItem;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
+    private LocationManager locationManager;
+    private String locationProvider;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initPosition();
+    }
+
+    /**
+     * 获取地理位置
+     */
+    private void initPosition() {
+        //获取地理位置管理器  
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //获取所有可用的位置提供器  
+        List<String> providers = locationManager.getProviders(true);
+        if (providers.contains(LocationManager.GPS_PROVIDER)) {
+            //如果是GPS  
+            locationProvider = LocationManager.GPS_PROVIDER;
+        } else if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
+            //如果是Network  
+            locationProvider = LocationManager.NETWORK_PROVIDER;
+        }
+        //获取Location  
+        Location location = locationManager.getLastKnownLocation(locationProvider);
+        if (location != null) {
+            //不为空,显示地理位置经纬度  
+            showLocation(location);
+        }
+        //监视地理位置变化  
+        locationManager.requestLocationUpdates(locationProvider, 3000, 1, locationListener);
+    }
+
+
+    /**
+     * 显示地理位置经度和纬度信息
+     *
+     * @param location 传入地理位置
+     */
+    private void showLocation(Location location) {
+        String locationStr = location.getLongitude() + "," + location.getLatitude();
+        LogUtils.i("------------", locationStr);
+        if (!TextUtils.isEmpty(locationStr)) {
+            //请求地理位置的天气信息
+            sendService(locationStr);
+        }
+
+    }
+
+    /**
+     * 请求当前位置的天气
+     *
+     * @param locationStr 传入的经纬度
+     */
+    private void sendService(String locationStr) {
+        OkHttp.sendOkHttpRequest(Constant.WEATHER_URL + locationStr + Constant.WEATHER_KEY, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "定位失败，请手动选择", Toast.LENGTH_SHORT).show();
+                        //进入主页
+                        GoWeather();
+
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String string = response.body().string();
+                Utility.handleWeatherResponse(string);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //缓存Json数据
+                        if (string != null) {
+                            Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
+                        }
+                        //进入主页
+                        GoWeather();
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void GoWeather() {
         if (!TextUtils.isEmpty(Sputils.getString(getApplicationContext(), Constant.WEATHER, null))) {
             //是否之前选择过城市，有选择就直接跳过
             startActivity(new Intent(getApplicationContext(), WeatherActivity.class));
             finish();
         }
-        initPermisson();
-
-
     }
 
     /**
-     * 申请权限
+     * LocationListern监听器
+     * 参数：地理位置提供器、监听位置变化的时间间隔、位置变化的距离间隔、LocationListener监听器
      */
-    private void initPermisson() {
-        List<PermissonItem> permissonItems = new ArrayList<PermissonItem>();
 
-        permissonItems.add(new PermissonItem(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                "SD卡读写", R.drawable.permission_ic_memory));
+    LocationListener locationListener = new LocationListener() {
 
-        permissonItems.add(new PermissonItem(Manifest.permission.ACCESS_FINE_LOCATION,
-                "地理位置", R.drawable.permission_ic_location));
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle arg2) {
 
-        HiPermission.create(MainActivity.this).title("亲爱的上帝")
-                .permissions(permissonItems)
-                .filterColor(ResourcesCompat.getColor(getResources(),
-                        R.color.colorPrimary, getTheme()))//图标的颜色
-                .msg("为了保护世界的和平，开启这些权限吧！\n我们一起拯救世界！")
-                .style(R.style.PermissionBlueStyle)
-                .checkMutiPermission(new PermissionCallback() {
-                    @Override
-                    public void onClose() {
-                        LogUtils.i(TAG, "用户关闭权限申请");
-                    }
+        }
 
-                    @Override
-                    public void onFinish() {
-                        LogUtils.i(TAG, "所有权限申请完毕");
+        @Override
+        public void onProviderEnabled(String provider) {
 
-                    }
+        }
 
-                    @Override
-                    public void onDeny(String permisson, int position) {
+        @Override
+        public void onProviderDisabled(String provider) {
 
-                    }
+        }
 
-                    @Override
-                    public void onGuarantee(String permisson, int position) {
+        @Override
+        public void onLocationChanged(Location location) {
+            //如果位置发生变化,重新显示
+            showLocation(location);
 
-                    }
-                });
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (locationManager != null) {
+            //移除监听器
+            locationManager.removeUpdates(locationListener);
+        }
     }
+
 
 }
