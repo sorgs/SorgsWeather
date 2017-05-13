@@ -29,4 +29,15 @@
         <item name="PermissionButtonTextColor">@android:color/white</item>
     </style>
 
+    <style name="suggest_text">
+        <item name="android:padding">10dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:textColor">#fff</item>
+        <item name="android:layout_margin">15dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:background">#8000</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
 </resources>

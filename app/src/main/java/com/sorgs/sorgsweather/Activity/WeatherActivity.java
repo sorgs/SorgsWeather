@@ -279,25 +279,25 @@ public class WeatherActivity extends AppCompatActivity {
                     qlty_text.setText(heWeatherBean.getAqi().getCity().getQlty());
                 }
 
-                air_text.setText(heWeatherBean.getSuggestion().getAir().getTxt());
+                air_text.setText("\n" + heWeatherBean.getSuggestion().getAir().getTxt());
 
                 //舒适度
-                comfort_text.setText(heWeatherBean.getSuggestion().getComf().getTxt());
+                comfort_text.setText("\n" + heWeatherBean.getSuggestion().getComf().getTxt());
 
                 //洗车指数
-                car_wash_text.setText(heWeatherBean.getSuggestion().getCw().getTxt());
+                car_wash_text.setText("\n" + heWeatherBean.getSuggestion().getCw().getTxt());
 
-                drsg_text.setText(heWeatherBean.getSuggestion().getDrsg().getTxt());
+                drsg_text.setText("\n" + heWeatherBean.getSuggestion().getDrsg().getTxt());
 
-                flu_text.setText(heWeatherBean.getSuggestion().getFlu().getTxt());
+                flu_text.setText("\n" + heWeatherBean.getSuggestion().getFlu().getTxt());
 
 
                 //运动建议
-                sport_text.setText(heWeatherBean.getSuggestion().getSport().getTxt());
+                sport_text.setText("\n" + heWeatherBean.getSuggestion().getSport().getTxt());
 
-                trav_text.setText(heWeatherBean.getSuggestion().getTrav().getTxt());
+                trav_text.setText("\n" + heWeatherBean.getSuggestion().getTrav().getTxt());
 
-                uv_text.setText(heWeatherBean.getSuggestion().getUv().getTxt());
+                uv_text.setText("\n" + heWeatherBean.getSuggestion().getUv().getTxt());
 
 
                 weather_layout.setVisibility(View.VISIBLE);
