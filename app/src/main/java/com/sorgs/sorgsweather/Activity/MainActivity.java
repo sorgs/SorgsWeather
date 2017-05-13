@@ -3,14 +3,16 @@ package com.sorgs.sorgsweather.Activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.support.v4.content.res.ResourcesCompat;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.sorgs.sorgsweather.Http.OkHttp;
@@ -23,7 +25,6 @@ import com.sorgs.sorgsweather.utils.Utility;
 
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
@@ -50,20 +51,18 @@ public class MainActivity extends AppCompatActivity {
     private void initPosition() {
         //获取地理位置管理器  
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        //获取所有可用的位置提供器  
-        List<String> providers = locationManager.getProviders(true);
-        if (providers.contains(LocationManager.GPS_PROVIDER)) {
-            //如果是GPS  
-            locationProvider = LocationManager.GPS_PROVIDER;
-        } else if (providers.contains(LocationManager.NETWORK_PROVIDER)) {
-            //如果是Network  
-            locationProvider = LocationManager.NETWORK_PROVIDER;
-        }
+
+        locationProvider = LocationManager.NETWORK_PROVIDER;
+
         //获取Location  
         Location location = locationManager.getLastKnownLocation(locationProvider);
         if (location != null) {
             //不为空,显示地理位置经纬度  
             showLocation(location);
+        } else {
+            Toast.makeText(getApplicationContext(), "定位失败", Toast.LENGTH_SHORT).show();
+            //进入主页
+            GoWeather();
         }
         //监视地理位置变化  
         locationManager.requestLocationUpdates(locationProvider, 3000, 1, locationListener);
@@ -77,10 +76,14 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showLocation(Location location) {
         String locationStr = location.getLongitude() + "," + location.getLatitude();
-        LogUtils.i("------------", locationStr);
+        LogUtils.i(TAG, locationStr);
         if (!TextUtils.isEmpty(locationStr)) {
             //请求地理位置的天气信息
             sendService(locationStr);
+        } else {
+            Toast.makeText(getApplicationContext(), "定位失败", Toast.LENGTH_SHORT).show();
+            //进入主页
+            GoWeather();
         }
 
     }
@@ -97,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(getApplicationContext(), "定位失败，请手动选择", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "定位失败", Toast.LENGTH_SHORT).show();
                         //进入主页
                         GoWeather();
 
@@ -109,13 +112,15 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 final String string = response.body().string();
                 Utility.handleWeatherResponse(string);
+                //缓存Json数据
+                if (string != null) {
+                    Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
+                }
+
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        //缓存Json数据
-                        if (string != null) {
-                            Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
-                        }
+
                         //进入主页
                         GoWeather();
                     }
@@ -126,10 +131,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void GoWeather() {
-        if (!TextUtils.isEmpty(Sputils.getString(getApplicationContext(), Constant.WEATHER, null))) {
-            //是否之前选择过城市，有选择就直接跳过
-            startActivity(new Intent(getApplicationContext(), WeatherActivity.class));
-            finish();
+
+        //获取数据缓存
+        String WeatherCache = Sputils.getString(getApplicationContext(), Constant.WEATHER, null);
+        LogUtils.i(TAG, "M取出缓存" + WeatherCache);
+        if (!TextUtils.isEmpty(WeatherCache)) {
+            //存在缓存，就去尝试解析
+            WeatherJson weatherJson = Utility.handleWeatherResponse(WeatherCache);
+            assert weatherJson != null;
+            for (WeatherJson.HeWeatherBean heWeatherBean :
+                    weatherJson.getHeWeather()) {
+                if ("ok".equals(heWeatherBean.getStatus())) {
+                    //是否之前选择过城市，有选择就直接跳过
+                    startActivity(new Intent(getApplicationContext(), WeatherActivity.class));
+                    finish();
+                } else {
+                    Log.i(TAG, "我是MainActivity的失败");
+                    Toast.makeText(getApplicationContext(), "定位失败，请选择城市", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
         }
     }
 

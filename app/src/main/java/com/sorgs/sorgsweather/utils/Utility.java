@@ -1,7 +1,6 @@
 package com.sorgs.sorgsweather.utils;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -15,11 +14,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
-import java.lang.reflect.Type;
-import java.util.List;
 
 public class Utility {
-    private static final String TAG = "Utility";
 
     public static boolean handleProvinceResponse(String response) {
 
@@ -32,7 +28,6 @@ public class Utility {
                 for (int i = 0; i < jsonProvince.length(); i++) {
                     JSONObject jsonObject = jsonProvince.getJSONObject(i);
                     Province province = new Province();
-                    Log.i(TAG, "province: " + jsonObject.getString("name"));
                     province.provinceName = jsonObject.getString("name");
                     province.provinceCode = jsonObject.getInt("id");
                     province.save();
@@ -54,7 +49,6 @@ public class Utility {
                 for (int i = 0; i < jsonCity.length(); i++) {
                     JSONObject jsonObject = jsonCity.getJSONObject(i);
                     City city = new City();
-                    Log.i(TAG, "City: " + jsonObject.getString("name"));
                     city.cityName = jsonObject.getString("name");
                     city.cityCode = jsonObject.getInt("id");
                     city.provinceId = provinceId;
@@ -78,7 +72,6 @@ public class Utility {
                 for (int i = 0; i < jsonCounty.length(); i++) {
                     JSONObject jsonObject = jsonCounty.getJSONObject(i);
                     County county = new County();
-                    Log.i(TAG, "County: " + jsonObject.getString("name"));
                     county.countyName = jsonObject.getString("name");
                     county.weatherId = jsonObject.getString("weather_id");
                     county.cityId = cityId;
@@ -107,7 +100,6 @@ public class Utility {
             return gson.fromJson(response, new TypeToken<WeatherJson>() {
             }.getType());
         } catch (Exception e) {
-            Log.i(TAG, "Json解析出错");
             e.printStackTrace();
         }
         return null;

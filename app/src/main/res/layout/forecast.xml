@@ -8,9 +8,9 @@
 
     <TextView
         style="@style/textView"
-        android:layout_marginLeft="15dp"
+        android:layout_gravity="center"
         android:layout_marginTop="15dp"
-        android:text="最近三天"
+        android:text="最近一周"
         android:textSize="20sp"/>
 
     <LinearLayout

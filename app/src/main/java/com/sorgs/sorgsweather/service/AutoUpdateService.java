@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.sorgs.sorgsweather.Activity.WeatherActivity;
 import com.sorgs.sorgsweather.Http.OkHttp;
 import com.sorgs.sorgsweather.domian.WeatherJson;
 import com.sorgs.sorgsweather.utils.Constant;
+import com.sorgs.sorgsweather.utils.LogUtils;
 import com.sorgs.sorgsweather.utils.Sputils;
 import com.sorgs.sorgsweather.utils.Utility;
 
@@ -29,6 +31,8 @@ import okhttp3.Response;
  */
 
 public class AutoUpdateService extends Service {
+    private static final String TAG = "AutoUpdateService";
+
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -75,20 +79,37 @@ public class AutoUpdateService extends Service {
      * 跟新天气信息
      */
     private void updateWeather() {
-        OkHttp.sendOkHttpRequest(Constant.WEATHER_URL, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
+        //提取缓存的城市
+        String Weather = Sputils.getString(getApplicationContext(), Constant.WEATHER, null);
+        if (!TextUtils.isEmpty(Weather)) {
+            //存在缓存，就直接去解析
+            WeatherJson weatherJson = Utility.handleWeatherResponse(Weather);
+            assert weatherJson != null;
+            for (WeatherJson.HeWeatherBean heWeatherBean :
+                    weatherJson.getHeWeather()) {
+                if ("ok".equals(heWeatherBean.getStatus())) {
+                    String weatherId = heWeatherBean.getBasic().getCity();
+                    String url = Constant.WEATHER_URL + weatherId + Constant.WEATHER_KEY;
+                    LogUtils.i(TAG, url);
+                    OkHttp.sendOkHttpRequest(Constant.WEATHER_URL + weatherId + Constant.WEATHER_KEY, new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            e.printStackTrace();
+                        }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String weather = response.body().string();
-                if (weather != null) {
-                    Sputils.putString(getApplicationContext(), Constant.WEATHER, weather);
-                    Utility.handleWeatherResponse(weather);
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String weather = response.body().string();
+                            if (weather != null) {
+                                Sputils.putString(getApplicationContext(), Constant.WEATHER, weather);
+                                Utility.handleWeatherResponse(weather);
+                            }
+                        }
+                    });
                 }
             }
-        });
+
+        }
     }
 }
+

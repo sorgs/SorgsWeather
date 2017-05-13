@@ -8,7 +8,7 @@
         android:id="@+id/date_text"
         style="@style/forecast"
         android:layout_gravity="center_vertical"
-        android:layout_weight="2"/>
+        android:layout_weight="1"/>
 
     <TextView
         android:id="@+id/info_text"
@@ -26,6 +26,13 @@
 
     <TextView
         android:id="@+id/min_text"
+        style="@style/forecast"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="right"/>
+
+    <TextView
+        android:id="@+id/win_text"
         style="@style/forecast"
         android:layout_gravity="center"
         android:layout_weight="1"

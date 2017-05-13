@@ -9,11 +9,12 @@
         android:id="@+id/degree_text"
         style="@style/textView"
         android:layout_gravity="end"
-        android:textSize="20sp"/>
+        android:textSize="22sp"/>
 
     <TextView
         android:id="@+id/weather_info_text"
         style="@style/textView"
-        android:layout_gravity="end"/>
+        android:layout_gravity="end"
+        android:textSize="20sp"/>
 
 </LinearLayout>

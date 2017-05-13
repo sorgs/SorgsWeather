@@ -70,7 +70,7 @@ public class StartActivity extends Activity {
                     public void onFinish() {
                         LogUtils.i(TAG, "所有权限申请完毕");
                         startActivity(new Intent(getApplication(), MainActivity.class));
-
+                        finish();
                     }
 
                     @Override

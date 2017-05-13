@@ -8,10 +8,17 @@
 
     <TextView
         style="@style/textView"
-        android:layout_marginLeft="15dp"
+        android:layout_gravity="center"
         android:layout_marginTop="15dp"
         android:text="生活建议"
         android:textSize="20sp"/>
+
+
+    <TextView
+        android:id="@+id/air_text"
+        style="@style/textView"
+        android:layout_margin="15dp"
+        android:textSize="15sp"/>
 
     <TextView
         android:id="@+id/comfort_text"
@@ -26,9 +33,34 @@
         android:textSize="15sp"/>
 
     <TextView
+        android:id="@+id/drsg_text"
+        style="@style/textView"
+        android:layout_margin="15dp"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/flu_text"
+        style="@style/textView"
+        android:layout_margin="15dp"
+        android:textSize="15sp"/>
+
+    <TextView
         android:id="@+id/sport_text"
         style="@style/textView"
         android:layout_margin="15dp"
         android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/trav_text"
+        style="@style/textView"
+        android:layout_margin="15dp"
+        android:textSize="15sp"/>
+
+    <TextView
+        android:id="@+id/uv_text"
+        style="@style/textView"
+        android:layout_margin="15dp"
+        android:textSize="15sp"/>
+
 
 </LinearLayout>
