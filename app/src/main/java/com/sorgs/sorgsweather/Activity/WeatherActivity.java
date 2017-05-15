@@ -1,11 +1,9 @@
 package com.sorgs.sorgsweather.Activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -30,6 +28,7 @@ import com.sorgs.sorgsweather.utils.Constant;
 import com.sorgs.sorgsweather.utils.LogUtils;
 import com.sorgs.sorgsweather.utils.Sputils;
 import com.sorgs.sorgsweather.utils.Utility;
+import com.sorgs.sorgsweather.utils.getCache;
 
 import java.io.IOException;
 
@@ -53,7 +52,6 @@ public class WeatherActivity extends AppCompatActivity {
     public DrawerLayout drawer_layout;
     private Button nav_button;
     public SwipeRefreshLayout swipe_refresh;
-    private String mWeatherId;
     private TextView air_text, drsg_text, flu_text, trav_text, uv_text;
 
     @Override
@@ -78,42 +76,30 @@ public class WeatherActivity extends AppCompatActivity {
      * 获取是否有缓存
      */
     private void getCache() {
-        //获取数据缓存
+        //获取缓存的json
         String WeatherCache = Sputils.getString(getApplicationContext(), Constant.WEATHER, null);
-        Log.i(TAG, "取出缓存: " + WeatherCache);
-        if (!TextUtils.isEmpty(WeatherCache)) {
-            //存在缓存，就直接去解析
+        //获取城市id
+        String cityID = getCache.getCityID(WeatherCache);
+        Log.i(TAG, "取出缓存: " + cityID);
+        if (!TextUtils.isEmpty(cityID)) {
+            //存在缓存并且正确，就直接去解析
             WeatherJson weatherJson = Utility.handleWeatherResponse(WeatherCache);
-            assert weatherJson != null;
-            for (WeatherJson.HeWeatherBean heWeatherBean :
-                    weatherJson.getHeWeather()) {
-                if ("ok".equals(heWeatherBean.getStatus())) {
-                    mWeatherId = heWeatherBean.getBasic().getCity();
-                    LogUtils.i(TAG, "缓存的城市: " + mWeatherId);
-                    showWeatherInfo(weatherJson);
-                } else {
-                    //无缓存的时候去服务器获取
-                    mWeatherId = getIntent().getStringExtra("weather_id");
-
-                    //请求的时候，暂时隐藏
-                    weather_layout.setVisibility(View.INVISIBLE);
-                    requestWeather(mWeatherId);
-                }
-            }
-
+            LogUtils.i(TAG, "取出缓存" + WeatherCache);
+            showWeatherInfo(weatherJson);
         } else {
             //无缓存的时候去服务器获取
-            mWeatherId = getIntent().getStringExtra("weather_id");
 
+            //获取传过来的id
+            String WeatherId = getIntent().getStringExtra("weather_id");
             //请求的时候，暂时隐藏
             weather_layout.setVisibility(View.INVISIBLE);
-            requestWeather(mWeatherId);
+            requestWeather(WeatherId);
         }
 
         //获取图片缓存
         String pic = Sputils.getString(getApplicationContext(), Constant.PIC, null);
         if (TextUtils.isEmpty(pic)) {
-            loacdPic();
+            loadPic();
         } else {
             //设置图片
             Glide.with(getApplicationContext()).load(pic).into(pic_img);
@@ -124,7 +110,10 @@ public class WeatherActivity extends AppCompatActivity {
         swipe_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                requestWeather(mWeatherId);
+                LogUtils.i(TAG, "开始刷新"+getCache.getCityID(Sputils.getString(getApplicationContext(),
+                        Constant.WEATHER, null)));
+                requestWeather(getCache.getCityID(Sputils.getString(getApplicationContext(),
+                        Constant.WEATHER, null)));
             }
         });
 
@@ -140,7 +129,8 @@ public class WeatherActivity extends AppCompatActivity {
         startService(new Intent(this, AutoUpdateService.class));
     }
 
-    private void loacdPic() {
+
+    private void loadPic() {
         OkHttp.sendOkHttpRequest(Constant.PIC_URL, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -180,21 +170,22 @@ public class WeatherActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String string = response.body().string();
-                final WeatherJson weatherJson = Utility.handleWeatherResponse(string);
-                //缓存Json数据
-                if (string != null) {
+                final String string = response.body().string();
+                //是否能获取城市id 缓存Json数据
+                if (!TextUtils.isEmpty(getCache.getCityID(string))) {
                     LogUtils.i(TAG, "缓存json: " + string);
-                    Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
+                    Sputils.putString(getApplicationContext(),Constant.WEATHER,string);
                 }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        WeatherJson weatherJson = Utility.handleWeatherResponse(string);
                         showWeatherInfo(weatherJson);
-                        loacdPic();
+                        loadPic();
                         swipe_refresh.setRefreshing(false);
                     }
                 });
+
             }
         });
     }
@@ -270,6 +261,7 @@ public class WeatherActivity extends AppCompatActivity {
                 }
 
                 if (heWeatherBean.getAqi() != null) {
+                    findViewById(R.id.ll_aqi).setVisibility(View.VISIBLE);
                     //aqi的值
                     aqi_text.setText(heWeatherBean.getAqi().getCity().getAqi());
 
@@ -277,6 +269,9 @@ public class WeatherActivity extends AppCompatActivity {
                     pm25_text.setText(heWeatherBean.getAqi().getCity().getPm25());
 
                     qlty_text.setText(heWeatherBean.getAqi().getCity().getQlty());
+                } else {
+                    //隐藏这部分信息
+                    findViewById(R.id.ll_aqi).setVisibility(View.GONE);
                 }
 
                 air_text.setText("\n" + heWeatherBean.getSuggestion().getAir().getTxt());

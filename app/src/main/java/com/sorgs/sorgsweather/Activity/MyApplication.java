@@ -51,7 +51,7 @@ public class MyApplication extends Application {
                     ex.printStackTrace();
                 }
                 //结束应用
-                System.exit(0);
+                //System.exit(0);
             }
 
         });

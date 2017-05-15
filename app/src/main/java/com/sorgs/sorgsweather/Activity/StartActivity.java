@@ -9,7 +9,11 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
+import android.view.View;
+import android.widget.RelativeLayout;
 
+import com.qq.e.ads.splash.SplashAD;
+import com.qq.e.ads.splash.SplashADListener;
 import com.sorgs.sorgsweather.R;
 import com.sorgs.sorgsweather.utils.LogUtils;
 
@@ -30,6 +34,11 @@ public class StartActivity extends Activity {
 
     private static final String TAG = "StartActivity";
 
+    /**
+     * 用于判断是否可以跳过广告，进入主页面
+     */
+    private boolean canJump;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,8 +46,6 @@ public class StartActivity extends Activity {
         setContentView(R.layout.activity_start);
 
         initPermisson();
-
-
     }
 
 
@@ -49,10 +56,13 @@ public class StartActivity extends Activity {
         List<PermissonItem> permissonItems = new ArrayList<PermissonItem>();
 
         permissonItems.add(new PermissonItem(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                "SD卡读写", R.drawable.permission_ic_memory));
+                "SD卡读写", R.mipmap.i_sd));
 
         permissonItems.add(new PermissonItem(Manifest.permission.ACCESS_COARSE_LOCATION,
-                "地理位置", R.drawable.permission_ic_location));
+                "地理位置", R.mipmap.i_location));
+
+        permissonItems.add(new PermissonItem(Manifest.permission.READ_PHONE_STATE,
+                "手机状态", R.mipmap.i_phone));
 
         HiPermission.create(StartActivity.this).title("亲爱的上帝")
                 .permissions(permissonItems)
@@ -69,8 +79,7 @@ public class StartActivity extends Activity {
                     @Override
                     public void onFinish() {
                         LogUtils.i(TAG, "所有权限申请完毕");
-                        startActivity(new Intent(getApplication(), MainActivity.class));
-                        finish();
+                        requestAds();
                     }
 
                     @Override
@@ -85,5 +94,65 @@ public class StartActivity extends Activity {
                 });
     }
 
+    /**
+     * 请求广告
+     */
+    private void requestAds() {
 
+        RelativeLayout rl_start = (RelativeLayout) findViewById(R.id.rl_start);
+        //应用ID
+        String appId = "1106090703";
+        String adId = "";
+        new SplashAD(this, rl_start, appId, adId, new SplashADListener() {
+            @Override
+            public void onADDismissed() {
+                //广告展示完毕
+            }
+
+            @Override
+            public void onNoAD(int i) {
+                //广告加载失败
+                forWard();
+            }
+
+            @Override
+            public void onADPresent() {
+                //广告加载成功
+            }
+
+            @Override
+            public void onADClicked() {
+                //广告被点击
+            }
+
+            @Override
+            public void onADTick(long l) {
+
+            }
+        });
+    }
+
+    private void forWard() {
+        if (canJump) {
+            startActivity(new Intent(getApplication(), MainActivity.class));
+            finish();
+        } else {
+            canJump = true;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        canJump = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (canJump) {
+            forWard();
+        }
+        canJump = true;
+    }
 }

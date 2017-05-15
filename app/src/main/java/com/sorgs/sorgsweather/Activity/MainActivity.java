@@ -22,10 +22,10 @@ import com.sorgs.sorgsweather.utils.Constant;
 import com.sorgs.sorgsweather.utils.LogUtils;
 import com.sorgs.sorgsweather.utils.Sputils;
 import com.sorgs.sorgsweather.utils.Utility;
+import com.sorgs.sorgsweather.utils.getCache;
 
 
 import java.io.IOException;
-import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -35,15 +35,23 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private LocationManager locationManager;
-    private String locationProvider;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initPosition();
+
+        if (!TextUtils.isEmpty(getCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null)))) {
+            //有缓存，不需要再去定位
+            LogUtils.i(TAG, "M获取缓存城市：" + getCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null)));
+            GoWeather();
+        } else {
+            //尝试定位
+            initPosition();
+        }
     }
+
 
     /**
      * 获取地理位置
@@ -52,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         //获取地理位置管理器  
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        locationProvider = LocationManager.NETWORK_PROVIDER;
+        String locationProvider = LocationManager.NETWORK_PROVIDER;
 
         //获取Location  
         Location location = locationManager.getLastKnownLocation(locationProvider);
@@ -116,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
                 if (string != null) {
                     Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
                 }
-
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -146,13 +153,13 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(new Intent(getApplicationContext(), WeatherActivity.class));
                     finish();
                 } else {
-                    Log.i(TAG, "我是MainActivity的失败");
                     Toast.makeText(getApplicationContext(), "定位失败，请选择城市", Toast.LENGTH_SHORT).show();
                     return;
                 }
             }
         }
     }
+
 
     /**
      * LocationListern监听器

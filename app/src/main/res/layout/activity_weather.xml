@@ -39,7 +39,9 @@
 
                     <include layout="@layout/now"/>
 
-                    <include layout="@layout/aqi"/>
+                    <include
+                        android:id="@+id/ll_aqi"
+                        layout="@layout/aqi"/>
 
                     <include layout="@layout/forecast"/>
 

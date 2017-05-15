@@ -16,6 +16,7 @@ import com.sorgs.sorgsweather.utils.Constant;
 import com.sorgs.sorgsweather.utils.LogUtils;
 import com.sorgs.sorgsweather.utils.Sputils;
 import com.sorgs.sorgsweather.utils.Utility;
+import com.sorgs.sorgsweather.utils.getCache;
 
 import java.io.IOException;
 
@@ -79,11 +80,11 @@ public class AutoUpdateService extends Service {
      * 跟新天气信息
      */
     private void updateWeather() {
-        //提取缓存的城市
-        String Weather = Sputils.getString(getApplicationContext(), Constant.WEATHER, null);
+
+        String Weather = getCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
         if (!TextUtils.isEmpty(Weather)) {
             //存在缓存，就直接去解析
-            WeatherJson weatherJson = Utility.handleWeatherResponse(Weather);
+            WeatherJson weatherJson = Utility.handleWeatherResponse(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
             assert weatherJson != null;
             for (WeatherJson.HeWeatherBean heWeatherBean :
                     weatherJson.getHeWeather()) {
@@ -99,11 +100,12 @@ public class AutoUpdateService extends Service {
 
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
-                            String weather = response.body().string();
-                            if (weather != null) {
-                                Sputils.putString(getApplicationContext(), Constant.WEATHER, weather);
-                                Utility.handleWeatherResponse(weather);
+                            String string = response.body().string();
+                            //是否能获取城市id 缓存Json数据
+                            if (!TextUtils.isEmpty(getCache.getCityID(string))) {
+                                Sputils.putString(getApplicationContext(),Constant.WEATHER,string);
                             }
+
                         }
                     });
                 }
