@@ -1,20 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_margin="15dp"
-              android:orientation="vertical">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="15dp">
 
     <TextView
         android:id="@+id/degree_text"
         style="@style/textView"
-        android:layout_gravity="end"
-        android:textSize="22sp"/>
+        android:layout_centerHorizontal="true"
+        android:textSize="27sp"/>
+
+    <ImageView
+        android:id="@+id/iv_weather"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/degree_text"
+        android:layout_marginLeft="10dp"
+        android:layout_toEndOf="@+id/degree_text"/>
 
     <TextView
         android:id="@+id/weather_info_text"
         style="@style/textView"
-        android:layout_gravity="end"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="37dp"
         android:textSize="20sp"/>
 
-</LinearLayout>
+</RelativeLayout>

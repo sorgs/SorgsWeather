@@ -110,7 +110,7 @@ public class WeatherActivity extends AppCompatActivity {
         swipe_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                LogUtils.i(TAG, "开始刷新"+getCache.getCityID(Sputils.getString(getApplicationContext(),
+                LogUtils.i(TAG, "开始刷新" + getCache.getCityID(Sputils.getString(getApplicationContext(),
                         Constant.WEATHER, null)));
                 requestWeather(getCache.getCityID(Sputils.getString(getApplicationContext(),
                         Constant.WEATHER, null)));
@@ -127,6 +127,18 @@ public class WeatherActivity extends AppCompatActivity {
 
         //开启后台更跟新服务
         startService(new Intent(this, AutoUpdateService.class));
+
+        //用户点击回到当前位置
+        findViewById(R.id.nav_location).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //点击开始定位，回到自己定位位置
+                Intent intent = new Intent(getApplication(), MainActivity.class);
+                intent.putExtra("position", "true");
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 
 
@@ -174,7 +186,7 @@ public class WeatherActivity extends AppCompatActivity {
                 //是否能获取城市id 缓存Json数据
                 if (!TextUtils.isEmpty(getCache.getCityID(string))) {
                     LogUtils.i(TAG, "缓存json: " + string);
-                    Sputils.putString(getApplicationContext(),Constant.WEATHER,string);
+                    Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
                 }
                 runOnUiThread(new Runnable() {
                     @Override
@@ -209,7 +221,21 @@ public class WeatherActivity extends AppCompatActivity {
                 degree_text.setText(heWeatherBean.getNow().getTmp() + "℃");
 
                 //设置天气
-                weather_info_text.setText(heWeatherBean.getNow().getCond().getTxt());
+                String txt = heWeatherBean.getNow().getCond().getTxt();
+
+                weather_info_text.setText(txt);
+
+                if (txt.contains("云")) {
+                    findViewById(R.id.iv_weather).setBackgroundResource(R.mipmap.w_cloud);
+                } else if (txt.contains("晴")) {
+                    findViewById(R.id.iv_weather).setBackgroundResource(R.mipmap.w_sun);
+                } else if (txt.contains("雪")) {
+                    findViewById(R.id.iv_weather).setBackgroundResource(R.mipmap.w_snow);
+                } else if (txt.contains("雨")) {
+                    findViewById(R.id.iv_weather).setBackgroundResource(R.mipmap.w_rain);
+                } else if (txt.contains("雷")) {
+                    findViewById(R.id.iv_weather).setBackgroundResource(R.mipmap.w_thunder);
+                }
 
 
                 //清除之前数据
@@ -274,25 +300,25 @@ public class WeatherActivity extends AppCompatActivity {
                     findViewById(R.id.ll_aqi).setVisibility(View.GONE);
                 }
 
-                air_text.setText("\n" + heWeatherBean.getSuggestion().getAir().getTxt());
+                air_text.setText(heWeatherBean.getSuggestion().getAir().getTxt());
 
                 //舒适度
-                comfort_text.setText("\n" + heWeatherBean.getSuggestion().getComf().getTxt());
+                comfort_text.setText(heWeatherBean.getSuggestion().getComf().getTxt());
 
                 //洗车指数
-                car_wash_text.setText("\n" + heWeatherBean.getSuggestion().getCw().getTxt());
+                car_wash_text.setText(heWeatherBean.getSuggestion().getCw().getTxt());
 
-                drsg_text.setText("\n" + heWeatherBean.getSuggestion().getDrsg().getTxt());
+                drsg_text.setText(heWeatherBean.getSuggestion().getDrsg().getTxt());
 
-                flu_text.setText("\n" + heWeatherBean.getSuggestion().getFlu().getTxt());
+                flu_text.setText(heWeatherBean.getSuggestion().getFlu().getTxt());
 
 
                 //运动建议
-                sport_text.setText("\n" + heWeatherBean.getSuggestion().getSport().getTxt());
+                sport_text.setText(heWeatherBean.getSuggestion().getSport().getTxt());
 
-                trav_text.setText("\n" + heWeatherBean.getSuggestion().getTrav().getTxt());
+                trav_text.setText(heWeatherBean.getSuggestion().getTrav().getTxt());
 
-                uv_text.setText("\n" + heWeatherBean.getSuggestion().getUv().getTxt());
+                uv_text.setText(heWeatherBean.getSuggestion().getUv().getTxt());
 
 
                 weather_layout.setVisibility(View.VISIBLE);

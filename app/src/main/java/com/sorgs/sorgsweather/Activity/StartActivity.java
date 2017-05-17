@@ -67,7 +67,7 @@ public class StartActivity extends Activity {
         HiPermission.create(StartActivity.this).title("亲爱的上帝")
                 .permissions(permissonItems)
                 .filterColor(ResourcesCompat.getColor(getResources(),
-                        R.color.colorPrimary, getTheme()))//图标的颜色
+                        R.color.colorWhile, getTheme()))//图标的颜色
                 .msg("为了保护世界的和平，开启这些权限吧！\n我们一起拯救世界！")
                 .style(R.style.PermissionBlueStyle)
                 .checkMutiPermission(new PermissionCallback() {
@@ -107,17 +107,20 @@ public class StartActivity extends Activity {
             @Override
             public void onADDismissed() {
                 //广告展示完毕
+                LogUtils.i(TAG, "广告展示完毕");
             }
 
             @Override
             public void onNoAD(int i) {
                 //广告加载失败
                 forWard();
+                LogUtils.i(TAG, "广告加载失败");
             }
 
             @Override
             public void onADPresent() {
                 //广告加载成功
+                LogUtils.i(TAG, "广告加载成功");
             }
 
             @Override

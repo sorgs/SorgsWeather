@@ -3,16 +3,12 @@ package com.sorgs.sorgsweather.Activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.sorgs.sorgsweather.Http.OkHttp;
@@ -42,14 +38,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if (!TextUtils.isEmpty(getCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null)))) {
-            //有缓存，不需要再去定位
-            LogUtils.i(TAG, "M获取缓存城市：" + getCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null)));
-            GoWeather();
+        String position = getIntent().getStringExtra("position");
+
+        if (TextUtils.isEmpty(position)) {
+            if (!TextUtils.isEmpty(getCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null)))) {
+                //有缓存，不需要再去定位
+                LogUtils.i(TAG, "M获取缓存城市：" + getCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null)));
+                GoWeather();
+            } else {
+                //尝试定位
+                initPosition();
+            }
         } else {
+            //用户点击回到当前定位地址
             //尝试定位
+            LogUtils.i(TAG, "尝试定位");
             initPosition();
         }
+
+
     }
 
 
@@ -62,10 +69,16 @@ public class MainActivity extends AppCompatActivity {
 
         String locationProvider = LocationManager.NETWORK_PROVIDER;
 
-        //获取Location  
+        try {
+            new Thread().sleep(700);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //获取Location
         Location location = locationManager.getLastKnownLocation(locationProvider);
         if (location != null) {
-            //不为空,显示地理位置经纬度  
+            //不为空,显示地理位置经纬度
             showLocation(location);
         } else {
             Toast.makeText(getApplicationContext(), "定位失败", Toast.LENGTH_SHORT).show();

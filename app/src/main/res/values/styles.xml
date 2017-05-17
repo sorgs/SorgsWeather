@@ -21,22 +21,23 @@
     </style>
 
     <style name="PermissionBlueStyle">
-        <item name="PermissionTitleColor">@color/colorPrimaryDark</item>
-        <item name="PermissionMsgColor">@color/colorPrimary</item>
-        <item name="PermissionItemTextColor">@color/colorPrimary</item>
-        <item name="PermissionButtonBackground">@drawable/shape_btn</item>
-        <item name="PermissionBackround">@drawable/shape_bg_white</item>
-        <item name="PermissionButtonTextColor">@android:color/white</item>
+        <item name="PermissionTitleColor">@color/colorPermission</item>
+        <item name="PermissionMsgColor">@color/colorPermission</item>
+        <item name="PermissionItemTextColor">@color/colorPermission</item>
+        <item name="PermissionButtonBackground">@drawable/bt_next</item>
+        <item name="PermissionBackround">@drawable/shape_</item>
+        <item name="PermissionButtonTextColor">@color/colorWhile</item>
     </style>
 
     <style name="suggest_text">
         <item name="android:padding">10dp</item>
+        <item name="android:drawablePadding">5dp</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:textColor">#fff</item>
         <item name="android:layout_margin">15dp</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:background">#8000</item>
+        <item name="android:background">#7000</item>
         <item name="android:textSize">15sp</item>
     </style>
 

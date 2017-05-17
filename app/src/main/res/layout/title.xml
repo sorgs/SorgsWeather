@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize">
+                android:layout_height="wrap_content">
 
     <Button
         android:id="@+id/nav_button"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="10dp"
-        android:background="@mipmap/ic_home"/>
+        android:layout_marginLeft="15dp"
+        android:background="@mipmap/home"/>
+
+    <Button
+        android:id="@+id/nav_location"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_toEndOf="@+id/nav_button"
+        android:background="@mipmap/location"/>
 
     <TextView
         android:id="@+id/title_city"
         style="@style/textView"
         android:layout_centerInParent="true"
-        android:textSize="33sp"/>
+        android:layout_marginTop="38dp"
+        android:textSize="26sp"/>
 
     <TextView
         android:id="@+id/title_update_time"
         style="@style/textView"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="10dp"
-        android:textSize="14sp"/>
+        android:layout_marginRight="15dp"
+        android:textSize="13sp"/>
 
 </RelativeLayout>
