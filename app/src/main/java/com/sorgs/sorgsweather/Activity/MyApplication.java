@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Environment;
 
+import com.bugtags.library.Bugtags;
 import com.sorgs.sorgsweather.utils.LogUtils;
 
 import org.litepal.LitePal;
@@ -27,6 +28,9 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
+        //在这里初始化
+        Bugtags.start("6218e8e235ba29a46461a8aac3027d4c", this, Bugtags.BTGInvocationEventBubble);
+
         context = getApplicationContext();
 
         LitePal.initialize(context);
@@ -38,18 +42,6 @@ public class MyApplication extends Application {
                 //在获取到了未捕获的异常后,处理的方法
                 e.printStackTrace();
                 LogUtils.i(TAG, "捕获到了一个程序的异常");
-                //将捕获的异常存储到 sd卡中
-                String path = context.getCacheDir() + "/error.xml";
-                File file = new File(path);
-                try {
-                    PrintWriter printWriter = new PrintWriter(file);
-                    e.printStackTrace(printWriter);
-                    printWriter.close();
-                    //上传服务器
-                    //...
-                } catch (FileNotFoundException ex) {
-                    ex.printStackTrace();
-                }
                 //结束应用
                 System.exit(0);
             }

@@ -1,6 +1,5 @@
 package com.sorgs.sorgsweather.Activity;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -28,7 +27,7 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
     private static final String TAG = "MainActivity";
     private LocationManager locationManager;
 

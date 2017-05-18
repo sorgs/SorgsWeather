@@ -2,14 +2,9 @@ package com.sorgs.sorgsweather.Activity;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
-import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.qq.e.ads.splash.SplashAD;
@@ -29,7 +24,7 @@ import me.weyye.hipermission.PermissonItem;
  * on 2017/5/13.
  */
 
-public class StartActivity extends Activity {
+public class StartActivity extends BaseActivity {
 
 
     private static final String TAG = "StartActivity";
