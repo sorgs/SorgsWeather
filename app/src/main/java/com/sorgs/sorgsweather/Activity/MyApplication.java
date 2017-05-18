@@ -29,7 +29,7 @@ public class MyApplication extends Application {
         super.onCreate();
 
         //在这里初始化
-        Bugtags.start("6218e8e235ba29a46461a8aac3027d4c", this, Bugtags.BTGInvocationEventBubble);
+        Bugtags.start("6218e8e235ba29a46461a8aac3027d4c", this, Bugtags.BTGInvocationEventNone);
 
         context = getApplicationContext();
 

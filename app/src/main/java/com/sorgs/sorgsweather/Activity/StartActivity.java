@@ -108,8 +108,8 @@ public class StartActivity extends BaseActivity {
             @Override
             public void onNoAD(int i) {
                 //广告加载失败
-                forWard();
                 LogUtils.i(TAG, "广告加载失败");
+                forWard();
             }
 
             @Override
