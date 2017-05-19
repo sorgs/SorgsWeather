@@ -208,6 +208,8 @@ public class WeatherActivity extends BaseActivity {
      * @param weatherJson weather类的实例
      */
     private void showWeatherInfo(WeatherJson weatherJson) {
+
+
         for (WeatherJson.HeWeatherBean heWeatherBean :
                 weatherJson.getHeWeather()) {
             if ("ok".equals(heWeatherBean.getStatus())) {

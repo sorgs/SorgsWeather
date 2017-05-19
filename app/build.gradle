@@ -8,8 +8,8 @@ android {
         applicationId "com.sorgs.sorgsweather"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -22,8 +22,8 @@ android {
 apply plugin: 'com.bugtags.library.plugin'
 bugtags {
     //自动上传符号表功能配置，如果需要根据 build varint 配置，请参考帮助中心->符号表->Android 符号表->配置自动上传符号表
-    appKey "6218e8e235ba29a46461a8aac3027d4c"  //这里是你的 appKey
-    appSecret "09b23b9074aeb58c6a7517fb8efa7e66"    //这里是你的 appSecret，管理员在设置页可以查看
+    appKey "a4b7f37e42f219b0f125024ed560807d"  //这里是你的 appKey
+    appSecret "41cf1736ea3d77ff0951d98488575f7d"    //这里是你的 appSecret，管理员在设置页可以查看
     mappingUploadEnabled true
 
 }

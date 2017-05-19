@@ -29,7 +29,7 @@ public class MyApplication extends Application {
         super.onCreate();
 
         //在这里初始化
-        Bugtags.start("6218e8e235ba29a46461a8aac3027d4c", this, Bugtags.BTGInvocationEventNone);
+        Bugtags.start("a4b7f37e42f219b0f125024ed560807d", this, Bugtags.BTGInvocationEventNone);
 
         context = getApplicationContext();
 
@@ -41,8 +41,11 @@ public class MyApplication extends Application {
             public void uncaughtException(Thread t, Throwable e) {
                 //在获取到了未捕获的异常后,处理的方法
                 e.printStackTrace();
-                LogUtils.i(TAG, "捕获到了一个程序的异常");
-                //结束应用
+                try {
+                    Thread.sleep(200);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
                 System.exit(0);
             }
 
