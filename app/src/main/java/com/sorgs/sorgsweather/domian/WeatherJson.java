@@ -409,7 +409,6 @@ public class WeatherJson {
 
         public static class SuggestionBean {
             /**
-             * air : {"brf":"较差","txt":"气象条件较不利于空气污染物稀释、扩散和清除，请适当减少室外活动时间。"}
              * comf : {"brf":"较舒适","txt":"白天天气晴好，您在这种天气条件下，会感觉早晚凉爽、舒适，午后偏热。"}
              * cw : {"brf":"较适宜","txt":"较适宜洗车，未来一天无雨，风力较小，擦洗一新的汽车至少能保持一天。"}
              * drsg : {"brf":"热","txt":"天气热，建议着短裙、短裤、短薄外套、T恤等夏季服装。"}
@@ -419,7 +418,6 @@ public class WeatherJson {
              * uv : {"brf":"弱","txt":"紫外线强度较弱，建议出门前涂擦SPF在12-15之间、PA+的防晒护肤品。"}
              */
 
-            private AirBean air;
             private ComfBean comf;
             private CwBean cw;
             private DrsgBean drsg;
@@ -428,13 +426,7 @@ public class WeatherJson {
             private TravBean trav;
             private UvBean uv;
 
-            public AirBean getAir() {
-                return air;
-            }
 
-            public void setAir(AirBean air) {
-                this.air = air;
-            }
 
             public ComfBean getComf() {
                 return comf;

@@ -2,16 +2,10 @@ package com.sorgs.sorgsweather.Activity;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Environment;
 
 import com.bugtags.library.Bugtags;
-import com.sorgs.sorgsweather.utils.LogUtils;
 
 import org.litepal.LitePal;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 
 /**
  * 防止app崩溃，让上传错误信息
@@ -20,7 +14,6 @@ import java.io.PrintWriter;
  */
 
 public class MyApplication extends Application {
-    private static final String TAG = "MyApplication";
 
     private static Context context;
 

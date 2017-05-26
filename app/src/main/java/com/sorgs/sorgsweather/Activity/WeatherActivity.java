@@ -7,9 +7,7 @@ import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +23,6 @@ import com.sorgs.sorgsweather.R;
 import com.sorgs.sorgsweather.domian.WeatherJson;
 import com.sorgs.sorgsweather.service.AutoUpdateService;
 import com.sorgs.sorgsweather.utils.Constant;
-import com.sorgs.sorgsweather.utils.LogUtils;
 import com.sorgs.sorgsweather.utils.Sputils;
 import com.sorgs.sorgsweather.utils.Utility;
 import com.sorgs.sorgsweather.utils.getCache;
@@ -43,7 +40,6 @@ import okhttp3.Response;
 
 public class WeatherActivity extends BaseActivity {
 
-    private static final String TAG = "WeatherActivity";
 
     private ScrollView weather_layout;
     private TextView title_city, title_update_time, degree_text, weather_info_text, aqi_text, pm25_text, comfort_text, car_wash_text, sport_text, qlty_text;
@@ -52,12 +48,12 @@ public class WeatherActivity extends BaseActivity {
     public DrawerLayout drawer_layout;
     private Button nav_button;
     public SwipeRefreshLayout swipe_refresh;
-    private TextView air_text, drsg_text, flu_text, trav_text, uv_text;
+    private TextView drsg_text, flu_text, trav_text, uv_text;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_weather);
+
 
         if (Build.VERSION.SDK_INT >= 21) {
             View view = getWindow().getDecorView();
@@ -65,6 +61,7 @@ public class WeatherActivity extends BaseActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
+        setContentView(R.layout.activity_weather);
         initUI();
 
         getCache();
@@ -80,11 +77,9 @@ public class WeatherActivity extends BaseActivity {
         String WeatherCache = Sputils.getString(getApplicationContext(), Constant.WEATHER, null);
         //获取城市id
         String cityID = getCache.getCityID(WeatherCache);
-        Log.i(TAG, "取出缓存: " + cityID);
         if (!TextUtils.isEmpty(cityID)) {
             //存在缓存并且正确，就直接去解析
             WeatherJson weatherJson = Utility.handleWeatherResponse(WeatherCache);
-            LogUtils.i(TAG, "取出缓存" + WeatherCache);
             showWeatherInfo(weatherJson);
         } else {
             //无缓存的时候去服务器获取
@@ -110,8 +105,7 @@ public class WeatherActivity extends BaseActivity {
         swipe_refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                LogUtils.i(TAG, "开始刷新" + getCache.getCityID(Sputils.getString(getApplicationContext(),
-                        Constant.WEATHER, null)));
+
                 requestWeather(getCache.getCityID(Sputils.getString(getApplicationContext(),
                         Constant.WEATHER, null)));
             }
@@ -185,7 +179,6 @@ public class WeatherActivity extends BaseActivity {
                 final String string = response.body().string();
                 //是否能获取城市id 缓存Json数据
                 if (!TextUtils.isEmpty(getCache.getCityID(string))) {
-                    LogUtils.i(TAG, "缓存json: " + string);
                     Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
                 }
                 runOnUiThread(new Runnable() {
@@ -302,7 +295,6 @@ public class WeatherActivity extends BaseActivity {
                     findViewById(R.id.ll_aqi).setVisibility(View.GONE);
                 }
 
-                air_text.setText(heWeatherBean.getSuggestion().getAir().getTxt());
 
                 //舒适度
                 comfort_text.setText(heWeatherBean.getSuggestion().getComf().getTxt());
@@ -346,7 +338,6 @@ public class WeatherActivity extends BaseActivity {
         comfort_text = (TextView) findViewById(R.id.comfort_text);
         car_wash_text = (TextView) findViewById(R.id.car_wash_text);
         sport_text = (TextView) findViewById(R.id.sport_text);
-        air_text = (TextView) findViewById(R.id.air_text);
         drsg_text = (TextView) findViewById(R.id.drsg_text);
         flu_text = (TextView) findViewById(R.id.flu_text);
         trav_text = (TextView) findViewById(R.id.trav_text);

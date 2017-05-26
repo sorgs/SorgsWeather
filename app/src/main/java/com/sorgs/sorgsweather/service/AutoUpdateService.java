@@ -7,13 +7,10 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.text.TextUtils;
-import android.view.View;
 
-import com.sorgs.sorgsweather.Activity.WeatherActivity;
 import com.sorgs.sorgsweather.Http.OkHttp;
 import com.sorgs.sorgsweather.domian.WeatherJson;
 import com.sorgs.sorgsweather.utils.Constant;
-import com.sorgs.sorgsweather.utils.LogUtils;
 import com.sorgs.sorgsweather.utils.Sputils;
 import com.sorgs.sorgsweather.utils.Utility;
 import com.sorgs.sorgsweather.utils.getCache;
@@ -32,7 +29,6 @@ import okhttp3.Response;
  */
 
 public class AutoUpdateService extends Service {
-    private static final String TAG = "AutoUpdateService";
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -90,8 +86,6 @@ public class AutoUpdateService extends Service {
                     weatherJson.getHeWeather()) {
                 if ("ok".equals(heWeatherBean.getStatus())) {
                     String weatherId = heWeatherBean.getBasic().getCity();
-                    String url = Constant.WEATHER_URL + weatherId + Constant.WEATHER_KEY;
-                    LogUtils.i(TAG, url);
                     OkHttp.sendOkHttpRequest(Constant.WEATHER_URL + weatherId + Constant.WEATHER_KEY, new Callback() {
                         @Override
                         public void onFailure(Call call, IOException e) {
@@ -103,7 +97,7 @@ public class AutoUpdateService extends Service {
                             String string = response.body().string();
                             //是否能获取城市id 缓存Json数据
                             if (!TextUtils.isEmpty(getCache.getCityID(string))) {
-                                Sputils.putString(getApplicationContext(),Constant.WEATHER,string);
+                                Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
                             }
 
                         }
