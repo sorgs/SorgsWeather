@@ -21,8 +21,8 @@ public class getCache {
     public static String getCityID(String WeatherCache) {
         if (!TextUtils.isEmpty(WeatherCache)) {
             WeatherJson weatherJson = Utility.handleWeatherResponse(WeatherCache);
-            for (WeatherJson.HeWeatherBean heWeatherBean :
-                    weatherJson.getHeWeather()) {
+            for (WeatherJson.HeWeather5Bean heWeatherBean :
+                    weatherJson.getHeWeather5()) {
                 if ("ok".equals(heWeatherBean.getStatus())) {
                     return heWeatherBean.getBasic().getCity();
                 }

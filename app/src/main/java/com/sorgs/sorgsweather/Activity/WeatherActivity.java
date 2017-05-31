@@ -48,7 +48,7 @@ public class WeatherActivity extends BaseActivity {
     public DrawerLayout drawer_layout;
     private Button nav_button;
     public SwipeRefreshLayout swipe_refresh;
-    private TextView drsg_text, flu_text, trav_text, uv_text;
+    private TextView drsg_text, flu_text, trav_text, uv_text, air_text;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -203,8 +203,8 @@ public class WeatherActivity extends BaseActivity {
     private void showWeatherInfo(WeatherJson weatherJson) {
 
 
-        for (WeatherJson.HeWeatherBean heWeatherBean :
-                weatherJson.getHeWeather()) {
+        for (WeatherJson.HeWeather5Bean heWeatherBean :
+                weatherJson.getHeWeather5()) {
             if ("ok".equals(heWeatherBean.getStatus())) {
                 //设置城市名字
                 title_city.setText(heWeatherBean.getBasic().getCity());
@@ -235,7 +235,7 @@ public class WeatherActivity extends BaseActivity {
 
                 //清除之前数据
                 forecast_layout.removeAllViews();
-                for (WeatherJson.HeWeatherBean.DailyForecastBean dailyForecastBean :
+                for (WeatherJson.HeWeather5Bean.DailyForecastBean dailyForecastBean :
                         heWeatherBean.getDaily_forecast()) {
                     View view = LayoutInflater.from(this).inflate(R.layout.forecast_item, forecast_layout, false);
                     TextView date_text = (TextView) view.findViewById(R.id.date_text);
@@ -296,6 +296,9 @@ public class WeatherActivity extends BaseActivity {
                 }
 
 
+                //空气质量
+                air_text.setText(heWeatherBean.getSuggestion().getAir().getTxt());
+
                 //舒适度
                 comfort_text.setText(heWeatherBean.getSuggestion().getComf().getTxt());
 
@@ -335,6 +338,7 @@ public class WeatherActivity extends BaseActivity {
         aqi_text = (TextView) findViewById(R.id.aqi_text);
         pm25_text = (TextView) findViewById(R.id.pm25_text);
         qlty_text = (TextView) findViewById(R.id.qlty_text);
+        air_text = (TextView) findViewById(R.id.air_text);
         comfort_text = (TextView) findViewById(R.id.comfort_text);
         car_wash_text = (TextView) findViewById(R.id.car_wash_text);
         sport_text = (TextView) findViewById(R.id.sport_text);

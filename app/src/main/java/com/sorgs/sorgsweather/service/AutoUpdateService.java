@@ -82,8 +82,8 @@ public class AutoUpdateService extends Service {
             //存在缓存，就直接去解析
             WeatherJson weatherJson = Utility.handleWeatherResponse(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
             assert weatherJson != null;
-            for (WeatherJson.HeWeatherBean heWeatherBean :
-                    weatherJson.getHeWeather()) {
+            for (WeatherJson.HeWeather5Bean heWeatherBean :
+                    weatherJson.getHeWeather5()) {
                 if ("ok".equals(heWeatherBean.getStatus())) {
                     String weatherId = heWeatherBean.getBasic().getCity();
                     OkHttp.sendOkHttpRequest(Constant.WEATHER_URL + weatherId + Constant.WEATHER_KEY, new Callback() {

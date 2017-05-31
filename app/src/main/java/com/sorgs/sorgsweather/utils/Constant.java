@@ -19,12 +19,12 @@ public class Constant {
     /**
      * 天气服务器url
      */
-    public static final String WEATHER_URL = "http://guolin.tech/api/weather?cityid=";
+    public static final String WEATHER_URL = "https://api.heweather.com/v5/weather?city=";
 
     /**
      * 天气服务器key
      */
-    public static final String WEATHER_KEY = "&key=bc0418b57b2d4918819d3974ac1285d9";
+    public static final String WEATHER_KEY = "&key=6654a43435694d8e922377f3204d3756";
 
     /**
      * 背景图片的url地址

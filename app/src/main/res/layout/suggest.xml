@@ -17,14 +17,24 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_margin="3dp"
         android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/air_text"
+            style="@style/suggest_text"
+            android:drawableTop="@mipmap/air"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
 
         <TextView
             android:id="@+id/comfort_text"
             style="@style/suggest_text"
             android:drawableTop="@mipmap/comfort"/>
+
+
     </LinearLayout>
 
 

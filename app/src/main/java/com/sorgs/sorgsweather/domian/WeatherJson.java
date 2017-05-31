@@ -10,25 +10,25 @@ import java.util.List;
 public class WeatherJson {
 
 
-    private List<HeWeatherBean> HeWeather;
+    private List<HeWeather5Bean> HeWeather5;
 
-    public List<HeWeatherBean> getHeWeather() {
-        return HeWeather;
+    public List<HeWeather5Bean> getHeWeather5() {
+        return HeWeather5;
     }
 
-    public void setHeWeather(List<HeWeatherBean> HeWeather) {
-        this.HeWeather = HeWeather;
+    public void setHeWeather5(List<HeWeather5Bean> HeWeather5) {
+        this.HeWeather5 = HeWeather5;
     }
 
-    public static class HeWeatherBean {
+    public static class HeWeather5Bean {
         /**
-         * aqi : {"city":{"aqi":"31","pm10":"29","pm25":"15","qlty":"优"}}
-         * basic : {"city":"都江堰","cnty":"中国","id":"CN101270111","lat":"30.99114037","lon":"103.62789917","update":{"loc":"2017-05-15 14:53","utc":"2017-05-15 06:53"}}
-         * daily_forecast : [{"astro":{"mr":"23:31","ms":"09:26","sr":"06:10","ss":"19:54"},"cond":{"code_d":"101","code_n":"101","txt_d":"多云","txt_n":"多云"},"date":"2017-05-15","hum":"60","pcpn":"2.1","pop":"100","pres":"1015","tmp":{"max":"28","min":"17"},"uv":"7","vis":"16","wind":{"deg":"262","dir":"南风","sc":"微风","spd":"8"}},{"astro":{"mr":"null","ms":"10:16","sr":"06:10","ss":"19:55"},"cond":{"code_d":"101","code_n":"101","txt_d":"多云","txt_n":"多云"},"date":"2017-05-16","hum":"55","pcpn":"0.0","pop":"3","pres":"1015","tmp":{"max":"28","min":"18"},"uv":"11","vis":"17","wind":{"deg":"235","dir":"南风","sc":"微风","spd":"5"}},{"astro":{"mr":"00:16","ms":"11:08","sr":"06:09","ss":"19:55"},"cond":{"code_d":"101","code_n":"300","txt_d":"多云","txt_n":"阵雨"},"date":"2017-05-17","hum":"59","pcpn":"0.0","pop":"0","pres":"1010","tmp":{"max":"30","min":"18"},"uv":"12","vis":"18","wind":{"deg":"284","dir":"南风","sc":"微风","spd":"8"}},{"astro":{"mr":"00:58","ms":"12:03","sr":"06:09","ss":"19:56"},"cond":{"code_d":"101","code_n":"101","txt_d":"多云","txt_n":"多云"},"date":"2017-05-18","hum":"67","pcpn":"2.9","pop":"86","pres":"1010","tmp":{"max":"30","min":"18"},"uv":"12","vis":"17","wind":{"deg":"165","dir":"南风","sc":"微风","spd":"4"}},{"astro":{"mr":"01:39","ms":"12:59","sr":"06:08","ss":"19:57"},"cond":{"code_d":"101","code_n":"101","txt_d":"多云","txt_n":"多云"},"date":"2017-05-19","hum":"67","pcpn":"0.2","pop":"0","pres":"1011","tmp":{"max":"31","min":"17"},"uv":"12","vis":"19","wind":{"deg":"223","dir":"南风","sc":"微风","spd":"3"}},{"astro":{"mr":"02:17","ms":"13:58","sr":"06:07","ss":"19:57"},"cond":{"code_d":"300","code_n":"300","txt_d":"阵雨","txt_n":"阵雨"},"date":"2017-05-20","hum":"64","pcpn":"0.0","pop":"0","pres":"1008","tmp":{"max":"32","min":"19"},"uv":"6","vis":"18","wind":{"deg":"216","dir":"南风","sc":"微风","spd":"4"}},{"astro":{"mr":"02:55","ms":"14:58","sr":"06:07","ss":"19:58"},"cond":{"code_d":"101","code_n":"305","txt_d":"多云","txt_n":"小雨"},"date":"2017-05-21","hum":"62","pcpn":"0.0","pop":"0","pres":"1008","tmp":{"max":"30","min":"19"},"uv":"6","vis":"19","wind":{"deg":"235","dir":"南风","sc":"微风","spd":"3"}}]
-         * hourly_forecast : [{"cond":{"code":"305","txt":"小雨"},"date":"2017-05-15 16:00","hum":"47","pop":"82","pres":"1013","tmp":"24","wind":{"deg":"202","dir":"西南风","sc":"微风","spd":"7"}},{"cond":{"code":"309","txt":"毛毛雨/细雨"},"date":"2017-05-15 19:00","hum":"53","pop":"28","pres":"1014","tmp":"22","wind":{"deg":"257","dir":"西南风","sc":"微风","spd":"7"}},{"cond":{"code":"103","txt":"晴间多云"},"date":"2017-05-15 22:00","hum":"60","pop":"6","pres":"1016","tmp":"20","wind":{"deg":"305","dir":"西北风","sc":"微风","spd":"6"}}]
-         * now : {"cond":{"code":"101","txt":"多云"},"fl":"21","hum":"47","pcpn":"0","pres":"1018","tmp":"24","vis":"10","wind":{"deg":"240","dir":"西风","sc":"3-4","spd":"21"}}
+         * aqi : {"city":{"aqi":"85","pm10":"89","pm25":"63","qlty":"良"}}
+         * basic : {"city":"都江堰","cnty":"中国","id":"CN101270111","lat":"30.99114037","lon":"103.62789917","update":{"loc":"2017-05-31 20:52","utc":"2017-05-31 12:52"}}
+         * daily_forecast : [{"astro":{"mr":"11:38","ms":"00:23","sr":"06:03","ss":"20:04"},"cond":{"code_d":"100","code_n":"300","txt_d":"晴","txt_n":"阵雨"},"date":"2017-05-31","hum":"70","pcpn":"0.0","pop":"48","pres":"1005","tmp":{"max":"27","min":"19"},"uv":"13","vis":"14","wind":{"deg":"172","dir":"北风","sc":"微风","spd":"8"}},{"astro":{"mr":"12:38","ms":"01:06","sr":"06:03","ss":"20:05"},"cond":{"code_d":"101","code_n":"305","txt_d":"多云","txt_n":"小雨"},"date":"2017-06-01","hum":"65","pcpn":"0.8","pop":"9","pres":"1004","tmp":{"max":"28","min":"20"},"uv":"11","vis":"18","wind":{"deg":"251","dir":"南风","sc":"微风","spd":"3"}},{"astro":{"mr":"13:37","ms":"01:45","sr":"06:03","ss":"20:05"},"cond":{"code_d":"305","code_n":"305","txt_d":"小雨","txt_n":"小雨"},"date":"2017-06-02","hum":"59","pcpn":"0.0","pop":"0","pres":"1003","tmp":{"max":"29","min":"18"},"uv":"12","vis":"19","wind":{"deg":"140","dir":"南风","sc":"微风","spd":"8"}}]
+         * hourly_forecast : [{"cond":{"code":"103","txt":"晴间多云"},"date":"2017-05-31 22:00","hum":"73","pop":"32","pres":"1004","tmp":"18","wind":{"deg":"124","dir":"东南风","sc":"??","spd":"3"}}]
+         * now : {"cond":{"code":"104","txt":"阴"},"fl":"29","hum":"72","pcpn":"0","pres":"1003","tmp":"22","vis":"7","wind":{"deg":"110","dir":"西北风","sc":"3-4","spd":"11"}}
          * status : ok
-         * suggestion : {"air":{"brf":"较差","txt":"气象条件较不利于空气污染物稀释、扩散和清除，请适当减少室外活动时间。"},"comf":{"brf":"较舒适","txt":"白天天气晴好，您在这种天气条件下，会感觉早晚凉爽、舒适，午后偏热。"},"cw":{"brf":"较适宜","txt":"较适宜洗车，未来一天无雨，风力较小，擦洗一新的汽车至少能保持一天。"},"drsg":{"brf":"热","txt":"天气热，建议着短裙、短裤、短薄外套、T恤等夏季服装。"},"flu":{"brf":"少发","txt":"各项气象条件适宜，无明显降温过程，发生感冒机率较低。"},"sport":{"brf":"较适宜","txt":"天气较好，较适宜进行各种运动，但因天气热，请适当减少运动时间，降低运动强度。"},"trav":{"brf":"适宜","txt":"天气较好，但丝毫不会影响您出行的心情。温度适宜又有微风相伴，适宜旅游。"},"uv":{"brf":"弱","txt":"紫外线强度较弱，建议出门前涂擦SPF在12-15之间、PA+的防晒护肤品。"}}
+         * suggestion : {"air":{"brf":"较差","txt":"气象条件较不利于空气污染物稀释、扩散和清除，请适当减少室外活动时间。"},"comf":{"brf":"较舒适","txt":"白天有雨，从而使空气湿度加大，会使人们感觉有点儿闷热，但早晚的天气很凉爽、舒适。"},"cw":{"brf":"不宜","txt":"不宜洗车，未来24小时内有雨，如果在此期间洗车，雨水和路上的泥水可能会再次弄脏您的爱车。"},"drsg":{"brf":"舒适","txt":"建议着长袖T恤、衬衫加单裤等服装。年老体弱者宜着针织长袖衬衫、马甲和长裤。"},"flu":{"brf":"少发","txt":"各项气象条件适宜，无明显降温过程，发生感冒机率较低。"},"sport":{"brf":"较不宜","txt":"有较强降水，建议您选择在室内进行健身休闲运动。"},"trav":{"brf":"一般","txt":"温度适宜，有微风同行，但较强降雨的天气将给您的出行带来很多的不便，若坚持旅行建议带上雨具。"},"uv":{"brf":"最弱","txt":"属弱紫外线辐射天气，无需特别防护。若长期在户外，建议涂擦SPF在8-12之间的防晒护肤品。"}}
          */
 
         private AqiBean aqi;
@@ -97,7 +97,7 @@ public class WeatherJson {
 
         public static class AqiBean {
             /**
-             * city : {"aqi":"31","pm10":"29","pm25":"15","qlty":"优"}
+             * city : {"aqi":"85","pm10":"89","pm25":"63","qlty":"良"}
              */
 
             private CityBean city;
@@ -112,10 +112,10 @@ public class WeatherJson {
 
             public static class CityBean {
                 /**
-                 * aqi : 31
-                 * pm10 : 29
-                 * pm25 : 15
-                 * qlty : 优
+                 * aqi : 85
+                 * pm10 : 89
+                 * pm25 : 63
+                 * qlty : 良
                  */
 
                 private String aqi;
@@ -164,7 +164,7 @@ public class WeatherJson {
              * id : CN101270111
              * lat : 30.99114037
              * lon : 103.62789917
-             * update : {"loc":"2017-05-15 14:53","utc":"2017-05-15 06:53"}
+             * update : {"loc":"2017-05-31 20:52","utc":"2017-05-31 12:52"}
              */
 
             private String city;
@@ -224,8 +224,8 @@ public class WeatherJson {
 
             public static class UpdateBean {
                 /**
-                 * loc : 2017-05-15 14:53
-                 * utc : 2017-05-15 06:53
+                 * loc : 2017-05-31 20:52
+                 * utc : 2017-05-31 12:52
                  */
 
                 private String loc;
@@ -251,14 +251,14 @@ public class WeatherJson {
 
         public static class NowBean {
             /**
-             * cond : {"code":"101","txt":"多云"}
-             * fl : 21
-             * hum : 47
+             * cond : {"code":"104","txt":"阴"}
+             * fl : 29
+             * hum : 72
              * pcpn : 0
-             * pres : 1018
-             * tmp : 24
-             * vis : 10
-             * wind : {"deg":"240","dir":"西风","sc":"3-4","spd":"21"}
+             * pres : 1003
+             * tmp : 22
+             * vis : 7
+             * wind : {"deg":"110","dir":"西北风","sc":"3-4","spd":"11"}
              */
 
             private CondBean cond;
@@ -336,8 +336,8 @@ public class WeatherJson {
 
             public static class CondBean {
                 /**
-                 * code : 101
-                 * txt : 多云
+                 * code : 104
+                 * txt : 阴
                  */
 
                 private String code;
@@ -362,10 +362,10 @@ public class WeatherJson {
 
             public static class WindBean {
                 /**
-                 * deg : 240
-                 * dir : 西风
+                 * deg : 110
+                 * dir : 西北风
                  * sc : 3-4
-                 * spd : 21
+                 * spd : 11
                  */
 
                 private String deg;
@@ -409,15 +409,17 @@ public class WeatherJson {
 
         public static class SuggestionBean {
             /**
-             * comf : {"brf":"较舒适","txt":"白天天气晴好，您在这种天气条件下，会感觉早晚凉爽、舒适，午后偏热。"}
-             * cw : {"brf":"较适宜","txt":"较适宜洗车，未来一天无雨，风力较小，擦洗一新的汽车至少能保持一天。"}
-             * drsg : {"brf":"热","txt":"天气热，建议着短裙、短裤、短薄外套、T恤等夏季服装。"}
+             * air : {"brf":"较差","txt":"气象条件较不利于空气污染物稀释、扩散和清除，请适当减少室外活动时间。"}
+             * comf : {"brf":"较舒适","txt":"白天有雨，从而使空气湿度加大，会使人们感觉有点儿闷热，但早晚的天气很凉爽、舒适。"}
+             * cw : {"brf":"不宜","txt":"不宜洗车，未来24小时内有雨，如果在此期间洗车，雨水和路上的泥水可能会再次弄脏您的爱车。"}
+             * drsg : {"brf":"舒适","txt":"建议着长袖T恤、衬衫加单裤等服装。年老体弱者宜着针织长袖衬衫、马甲和长裤。"}
              * flu : {"brf":"少发","txt":"各项气象条件适宜，无明显降温过程，发生感冒机率较低。"}
-             * sport : {"brf":"较适宜","txt":"天气较好，较适宜进行各种运动，但因天气热，请适当减少运动时间，降低运动强度。"}
-             * trav : {"brf":"适宜","txt":"天气较好，但丝毫不会影响您出行的心情。温度适宜又有微风相伴，适宜旅游。"}
-             * uv : {"brf":"弱","txt":"紫外线强度较弱，建议出门前涂擦SPF在12-15之间、PA+的防晒护肤品。"}
+             * sport : {"brf":"较不宜","txt":"有较强降水，建议您选择在室内进行健身休闲运动。"}
+             * trav : {"brf":"一般","txt":"温度适宜，有微风同行，但较强降雨的天气将给您的出行带来很多的不便，若坚持旅行建议带上雨具。"}
+             * uv : {"brf":"最弱","txt":"属弱紫外线辐射天气，无需特别防护。若长期在户外，建议涂擦SPF在8-12之间的防晒护肤品。"}
              */
 
+            private AirBean air;
             private ComfBean comf;
             private CwBean cw;
             private DrsgBean drsg;
@@ -426,7 +428,13 @@ public class WeatherJson {
             private TravBean trav;
             private UvBean uv;
 
+            public AirBean getAir() {
+                return air;
+            }
 
+            public void setAir(AirBean air) {
+                this.air = air;
+            }
 
             public ComfBean getComf() {
                 return comf;
@@ -513,7 +521,7 @@ public class WeatherJson {
             public static class ComfBean {
                 /**
                  * brf : 较舒适
-                 * txt : 白天天气晴好，您在这种天气条件下，会感觉早晚凉爽、舒适，午后偏热。
+                 * txt : 白天有雨，从而使空气湿度加大，会使人们感觉有点儿闷热，但早晚的天气很凉爽、舒适。
                  */
 
                 private String brf;
@@ -538,8 +546,8 @@ public class WeatherJson {
 
             public static class CwBean {
                 /**
-                 * brf : 较适宜
-                 * txt : 较适宜洗车，未来一天无雨，风力较小，擦洗一新的汽车至少能保持一天。
+                 * brf : 不宜
+                 * txt : 不宜洗车，未来24小时内有雨，如果在此期间洗车，雨水和路上的泥水可能会再次弄脏您的爱车。
                  */
 
                 private String brf;
@@ -564,8 +572,8 @@ public class WeatherJson {
 
             public static class DrsgBean {
                 /**
-                 * brf : 热
-                 * txt : 天气热，建议着短裙、短裤、短薄外套、T恤等夏季服装。
+                 * brf : 舒适
+                 * txt : 建议着长袖T恤、衬衫加单裤等服装。年老体弱者宜着针织长袖衬衫、马甲和长裤。
                  */
 
                 private String brf;
@@ -616,8 +624,8 @@ public class WeatherJson {
 
             public static class SportBean {
                 /**
-                 * brf : 较适宜
-                 * txt : 天气较好，较适宜进行各种运动，但因天气热，请适当减少运动时间，降低运动强度。
+                 * brf : 较不宜
+                 * txt : 有较强降水，建议您选择在室内进行健身休闲运动。
                  */
 
                 private String brf;
@@ -642,8 +650,8 @@ public class WeatherJson {
 
             public static class TravBean {
                 /**
-                 * brf : 适宜
-                 * txt : 天气较好，但丝毫不会影响您出行的心情。温度适宜又有微风相伴，适宜旅游。
+                 * brf : 一般
+                 * txt : 温度适宜，有微风同行，但较强降雨的天气将给您的出行带来很多的不便，若坚持旅行建议带上雨具。
                  */
 
                 private String brf;
@@ -668,8 +676,8 @@ public class WeatherJson {
 
             public static class UvBean {
                 /**
-                 * brf : 弱
-                 * txt : 紫外线强度较弱，建议出门前涂擦SPF在12-15之间、PA+的防晒护肤品。
+                 * brf : 最弱
+                 * txt : 属弱紫外线辐射天气，无需特别防护。若长期在户外，建议涂擦SPF在8-12之间的防晒护肤品。
                  */
 
                 private String brf;
@@ -695,17 +703,17 @@ public class WeatherJson {
 
         public static class DailyForecastBean {
             /**
-             * astro : {"mr":"23:31","ms":"09:26","sr":"06:10","ss":"19:54"}
-             * cond : {"code_d":"101","code_n":"101","txt_d":"多云","txt_n":"多云"}
-             * date : 2017-05-15
-             * hum : 60
-             * pcpn : 2.1
-             * pop : 100
-             * pres : 1015
-             * tmp : {"max":"28","min":"17"}
-             * uv : 7
-             * vis : 16
-             * wind : {"deg":"262","dir":"南风","sc":"微风","spd":"8"}
+             * astro : {"mr":"11:38","ms":"00:23","sr":"06:03","ss":"20:04"}
+             * cond : {"code_d":"100","code_n":"300","txt_d":"晴","txt_n":"阵雨"}
+             * date : 2017-05-31
+             * hum : 70
+             * pcpn : 0.0
+             * pop : 48
+             * pres : 1005
+             * tmp : {"max":"27","min":"19"}
+             * uv : 13
+             * vis : 14
+             * wind : {"deg":"172","dir":"北风","sc":"微风","spd":"8"}
              */
 
             private AstroBean astro;
@@ -810,10 +818,10 @@ public class WeatherJson {
 
             public static class AstroBean {
                 /**
-                 * mr : 23:31
-                 * ms : 09:26
-                 * sr : 06:10
-                 * ss : 19:54
+                 * mr : 11:38
+                 * ms : 00:23
+                 * sr : 06:03
+                 * ss : 20:04
                  */
 
                 private String mr;
@@ -856,10 +864,10 @@ public class WeatherJson {
 
             public static class CondBeanX {
                 /**
-                 * code_d : 101
-                 * code_n : 101
-                 * txt_d : 多云
-                 * txt_n : 多云
+                 * code_d : 100
+                 * code_n : 300
+                 * txt_d : 晴
+                 * txt_n : 阵雨
                  */
 
                 private String code_d;
@@ -902,8 +910,8 @@ public class WeatherJson {
 
             public static class TmpBean {
                 /**
-                 * max : 28
-                 * min : 17
+                 * max : 27
+                 * min : 19
                  */
 
                 private String max;
@@ -928,8 +936,8 @@ public class WeatherJson {
 
             public static class WindBeanX {
                 /**
-                 * deg : 262
-                 * dir : 南风
+                 * deg : 172
+                 * dir : 北风
                  * sc : 微风
                  * spd : 8
                  */
@@ -975,13 +983,13 @@ public class WeatherJson {
 
         public static class HourlyForecastBean {
             /**
-             * cond : {"code":"305","txt":"小雨"}
-             * date : 2017-05-15 16:00
-             * hum : 47
-             * pop : 82
-             * pres : 1013
-             * tmp : 24
-             * wind : {"deg":"202","dir":"西南风","sc":"微风","spd":"7"}
+             * cond : {"code":"103","txt":"晴间多云"}
+             * date : 2017-05-31 22:00
+             * hum : 73
+             * pop : 32
+             * pres : 1004
+             * tmp : 18
+             * wind : {"deg":"124","dir":"东南风","sc":"??","spd":"3"}
              */
 
             private CondBeanXX cond;
@@ -1050,8 +1058,8 @@ public class WeatherJson {
 
             public static class CondBeanXX {
                 /**
-                 * code : 305
-                 * txt : 小雨
+                 * code : 103
+                 * txt : 晴间多云
                  */
 
                 private String code;
@@ -1076,10 +1084,10 @@ public class WeatherJson {
 
             public static class WindBeanXX {
                 /**
-                 * deg : 202
-                 * dir : 西南风
-                 * sc : 微风
-                 * spd : 7
+                 * deg : 124
+                 * dir : 东南风
+                 * sc : ??
+                 * spd : 3
                  */
 
                 private String deg;

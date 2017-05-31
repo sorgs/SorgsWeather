@@ -133,8 +133,8 @@ public class MainActivity extends BaseActivity {
             //存在缓存，就去尝试解析
             WeatherJson weatherJson = Utility.handleWeatherResponse(WeatherCache);
             assert weatherJson != null;
-            for (WeatherJson.HeWeatherBean heWeatherBean :
-                    weatherJson.getHeWeather()) {
+            for (WeatherJson.HeWeather5Bean heWeatherBean :
+                    weatherJson.getHeWeather5()) {
                 if ("ok".equals(heWeatherBean.getStatus())) {
                     //是否之前选择过城市，有选择就直接跳过
                     startActivity(new Intent(getApplicationContext(), WeatherActivity.class));
