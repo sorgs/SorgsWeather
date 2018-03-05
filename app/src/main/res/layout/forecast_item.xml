@@ -5,37 +5,37 @@
               android:layout_margin="15dp">
 
     <TextView
-        android:id="@+id/date_text"
-        style="@style/forecast"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"/>
+            android:id="@+id/date_text"
+            style="@style/forecast"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"/>
 
     <TextView
-        android:id="@+id/info_text"
-        style="@style/forecast"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:gravity="center"/>
+            android:id="@+id/info_text"
+            style="@style/forecast"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="2"
+            android:gravity="center"/>
 
     <TextView
-        android:id="@+id/max_text"
-        style="@style/forecast"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:gravity="right"/>
+            android:id="@+id/max_text"
+            style="@style/forecast"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="right"/>
 
     <TextView
-        android:id="@+id/min_text"
-        style="@style/forecast"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:gravity="right"/>
+            android:id="@+id/min_text"
+            style="@style/forecast"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="right"/>
 
     <TextView
-        android:id="@+id/win_text"
-        style="@style/forecast"
-        android:layout_gravity="center"
-        android:layout_weight="1"
-        android:gravity="right"/>
+            android:id="@+id/win_text"
+            style="@style/forecast"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:gravity="right"/>
 
 </LinearLayout>

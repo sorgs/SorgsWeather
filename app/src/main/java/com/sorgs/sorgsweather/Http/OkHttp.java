@@ -1,4 +1,4 @@
-package com.sorgs.sorgsweather.Http;
+package com.sorgs.sorgsweather.http;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

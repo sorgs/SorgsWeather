@@ -1,47 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:background="@color/colorPrimary">
 
     <ImageView
-        android:id="@+id/pic_img"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"/>
+            android:id="@+id/pic_img"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
     <!--scaleType缩放比 centerCrop：按比例扩大图片的size居中显示，使得图片长(宽)等于或大于View的长(宽) -->
 
     <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_refresh"
+            android:id="@+id/drawer_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <ScrollView
-                android:id="@+id/weather_layout"
+        <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:overScrollMode="never"
-                android:scrollbars="none">
+                android:layout_height="match_parent">
+
+            <ScrollView
+                    android:id="@+id/weather_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never"
+                    android:scrollbars="none">
 
                 <!--fitsSystemWindows 预留状态栏空间-->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fitsSystemWindows="true"
-                    android:orientation="vertical">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fitsSystemWindows="true"
+                        android:orientation="vertical">
+
 
                     <include layout="@layout/title"/>
 
                     <include layout="@layout/now"/>
 
+                    <com.sorgs.sorgsweather.ui.widget.BrokenLineView
+                            android:id="@+id/bl_view"
+                            app:line_interval="70dp"
+                            app:min_point_height="60dp"
+                            app:background_color="#7000"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
+
+
                     <include
-                        android:id="@+id/ll_aqi"
-                        layout="@layout/aqi"/>
+                            android:id="@+id/ll_aqi"
+                            layout="@layout/aqi"/>
 
                     <include layout="@layout/forecast"/>
 
@@ -53,11 +64,11 @@
         </android.support.v4.widget.SwipeRefreshLayout>
 
         <fragment
-            android:id="@+id/choose_area_fragment"
-            android:name="com.sorgs.sorgsweather.Fragment.ChooseAreaFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"/>
+                android:id="@+id/choose_area_fragment"
+                android:name="com.sorgs.sorgsweather.ui.fragment.ChooseAreaFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"/>
 
     </android.support.v4.widget.DrawerLayout>
 

@@ -1,6 +1,5 @@
 package com.sorgs.sorgsweather.utils;
 
-import android.content.Context;
 import android.text.TextUtils;
 
 import com.sorgs.sorgsweather.domian.WeatherJson;
@@ -11,7 +10,7 @@ import com.sorgs.sorgsweather.domian.WeatherJson;
  * on 2017/5/15.
  */
 
-public class getCache {
+public class GetCache {
     /**
      * 从缓存的中获取城市id
      *
@@ -20,7 +19,7 @@ public class getCache {
      */
     public static String getCityID(String WeatherCache) {
         if (!TextUtils.isEmpty(WeatherCache)) {
-            WeatherJson weatherJson = Utility.handleWeatherResponse(WeatherCache);
+            WeatherJson weatherJson = HandleUtility.handleWeatherResponse(WeatherCache);
             for (WeatherJson.HeWeather5Bean heWeatherBean :
                     weatherJson.getHeWeather5()) {
                 if ("ok".equals(heWeatherBean.getStatus())) {

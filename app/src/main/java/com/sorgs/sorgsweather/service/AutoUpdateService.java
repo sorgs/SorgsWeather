@@ -8,12 +8,12 @@ import android.os.IBinder;
 import android.os.SystemClock;
 import android.text.TextUtils;
 
-import com.sorgs.sorgsweather.Http.OkHttp;
+import com.sorgs.sorgsweather.http.OkHttp;
 import com.sorgs.sorgsweather.domian.WeatherJson;
 import com.sorgs.sorgsweather.utils.Constant;
 import com.sorgs.sorgsweather.utils.Sputils;
-import com.sorgs.sorgsweather.utils.Utility;
-import com.sorgs.sorgsweather.utils.getCache;
+import com.sorgs.sorgsweather.utils.HandleUtility;
+import com.sorgs.sorgsweather.utils.GetCache;
 
 import java.io.IOException;
 
@@ -77,10 +77,10 @@ public class AutoUpdateService extends Service {
      */
     private void updateWeather() {
 
-        String Weather = getCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
+        String Weather = GetCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
         if (!TextUtils.isEmpty(Weather)) {
             //存在缓存，就直接去解析
-            WeatherJson weatherJson = Utility.handleWeatherResponse(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
+            WeatherJson weatherJson = HandleUtility.handleWeatherResponse(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
             assert weatherJson != null;
             for (WeatherJson.HeWeather5Bean heWeatherBean :
                     weatherJson.getHeWeather5()) {
@@ -96,7 +96,7 @@ public class AutoUpdateService extends Service {
                         public void onResponse(Call call, Response response) throws IOException {
                             String string = response.body().string();
                             //是否能获取城市id 缓存Json数据
-                            if (!TextUtils.isEmpty(getCache.getCityID(string))) {
+                            if (!TextUtils.isEmpty(GetCache.getCityID(string))) {
                                 Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
                             }
 

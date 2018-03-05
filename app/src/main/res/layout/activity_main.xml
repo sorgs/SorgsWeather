@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/choose_area_fragment"
-        android:name="com.sorgs.sorgsweather.Fragment.ChooseAreaFragment"
+        android:name="com.sorgs.sorgsweather.ui.fragment.ChooseAreaFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </FrameLayout>
