@@ -32,7 +32,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
 
         mLocationClient = new LocationClient(getApplicationContext());
-        mLocationClient.registerLocationListener(new MyLocationListentener());
+        mLocationClient.registerLocationListener(new MyLocationListener());
         setContentView(R.layout.activity_main);
 
 
@@ -51,11 +51,9 @@ public class MainActivity extends BaseActivity {
             //尝试定位
             initPosition();
         }
-
-
     }
 
-    private class MyLocationListentener implements BDLocationListener {
+    private class MyLocationListener implements BDLocationListener {
         @Override
         public void onReceiveLocation(BDLocation location) {
             String mLocation = location.getLongitude() + "," + location.getLatitude();

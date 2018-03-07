@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 /**
- * description: xxx.
+ * description: 操作天气图标工具类.
  *
  * @author Sorgs.
  * @date 2018/3/1.

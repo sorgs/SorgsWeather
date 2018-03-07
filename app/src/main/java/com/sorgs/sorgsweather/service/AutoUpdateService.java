@@ -76,9 +76,8 @@ public class AutoUpdateService extends Service {
      * 跟新天气信息
      */
     private void updateWeather() {
-
-        String Weather = GetCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
-        if (!TextUtils.isEmpty(Weather)) {
+        String weather = GetCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
+        if (!TextUtils.isEmpty(weather)) {
             //存在缓存，就直接去解析
             WeatherJson weatherJson = HandleUtility.handleWeatherResponse(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
             assert weatherJson != null;
