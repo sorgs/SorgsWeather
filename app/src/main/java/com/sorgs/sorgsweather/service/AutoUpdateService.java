@@ -1,5 +1,12 @@
 package com.sorgs.sorgsweather.service;
 
+import com.sorgs.sorgsweather.domian.WeatherJson;
+import com.sorgs.sorgsweather.http.OkHttp;
+import com.sorgs.sorgsweather.utils.Constant;
+import com.sorgs.sorgsweather.utils.HandleUtility;
+import com.sorgs.sorgsweather.utils.Sputils;
+import com.sorgs.sorgsweather.utils.GetCache;
+
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -7,13 +14,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.text.TextUtils;
-
-import com.sorgs.sorgsweather.http.OkHttp;
-import com.sorgs.sorgsweather.domian.WeatherJson;
-import com.sorgs.sorgsweather.utils.Constant;
-import com.sorgs.sorgsweather.utils.Sputils;
-import com.sorgs.sorgsweather.utils.HandleUtility;
-import com.sorgs.sorgsweather.utils.GetCache;
 
 import java.io.IOException;
 

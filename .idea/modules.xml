@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SorgsWeather.iml" filepath="$PROJECT_DIR$/SorgsWeather.iml" />
+      <module fileurl="file://E:\Android\weather\SorgsWeather\SorgsWeather.iml" filepath="E:\Android\weather\SorgsWeather\SorgsWeather.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://E:\Android\weather\SorgsWeather\app\app.iml" filepath="E:\Android\weather\SorgsWeather\app\app.iml" />
     </modules>
   </component>
 </project>

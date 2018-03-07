@@ -1,13 +1,14 @@
 package com.sorgs.sorgsweather.utils;
 
-import android.text.TextUtils;
-
 import com.sorgs.sorgsweather.domian.WeatherJson;
 
+import android.text.TextUtils;
+
 /**
- * 获取缓存的东西
- * Created by Sorgs
- * on 2017/5/15.
+ * description: xxx.
+ *
+ * @author Sorgs.
+ * @date 2018/3/5.
  */
 
 public class GetCache {
@@ -29,5 +30,4 @@ public class GetCache {
         }
         return null;
     }
-
 }

@@ -8,9 +8,9 @@ import com.sorgs.sorgsweather.http.OkHttp;
 import com.sorgs.sorgsweather.service.AutoUpdateService;
 import com.sorgs.sorgsweather.ui.widget.BrokenLineView;
 import com.sorgs.sorgsweather.utils.Constant;
-import com.sorgs.sorgsweather.utils.GetCache;
 import com.sorgs.sorgsweather.utils.HandleUtility;
 import com.sorgs.sorgsweather.utils.Sputils;
+import com.sorgs.sorgsweather.utils.GetCache;
 
 import android.content.Intent;
 import android.graphics.Color;
@@ -265,35 +265,16 @@ public class WeatherActivity extends BaseActivity {
                     date_text.setText(dailyForecastBean.getDate().substring(5));
 
                     //预气日期的天气
-                    //String txt_d = dailyForecastBean.getCond().getTxt_d();
                     info_text.setText(dailyForecastBean.getCond().getTxt_d());
-                   /* if (txt_d.length() <= 1) {
-                        info_text.setText("天气:    " + txt_d);
-                    } else {
-                        info_text.setText("天气:" + txt_d);
-                    }*/
-
 
                     //预报日期最高气温
-                    String max = dailyForecastBean.getTmp().getMax();
-                    if (max.length() < 2) {
-                        max_text.setText("最高:    " + max + "℃");
-                    } else {
-                        max_text.setText("最高:" + max + "℃");
-                    }
-
+                    max_text.setText("最高:" + dailyForecastBean.getTmp().getMax() + "℃");
 
                     //预报日期最低气温
-
-                    String min = dailyForecastBean.getTmp().getMin();
-                    if (min.length() < 2) {
-                        min_text.setText("最低:    " + min + "℃");
-                    } else {
-                        min_text.setText("最低:" + min + "℃");
-                    }
+                    min_text.setText("最低:" + dailyForecastBean.getTmp().getMin() + "℃");
 
                     //风力
-                    win_text.setText(dailyForecastBean.getWind().getSc());
+                    win_text.setText("风力:" + dailyForecastBean.getWind().getSc());
 
                     //设置上去
                     forecast_layout.addView(view);

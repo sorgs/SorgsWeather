@@ -122,28 +122,16 @@ public class BrokenLineView extends View {
 
     public BrokenLineView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
-
-        mScroller = new Scroller(context);
-        mViewConfiguration = ViewConfiguration.get(context);
-
-        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.BrokenLineView);
-        mMinPointHeight = (int) typedArray.getDimension(R.styleable.BrokenLineView_min_point_height, dp2pxF(context, 60));
-        mLineInterval = (int) typedArray.getDimension(R.styleable.BrokenLineView_line_interval, dp2pxF(context, 60));
-        mBackgroundColor = typedArray.getColor(R.styleable.BrokenLineView_background_color, Color.WHITE);
-
-        typedArray.recycle();
-
-        setBackgroundColor(mBackgroundColor);
-
-        initSize(context);
-
-        initPaint(context);
-
-
+        init(context, attrs);
     }
+
 
     public BrokenLineView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context, attrs);
+    }
+
+    private void init(Context context, AttributeSet attrs) {
         mScroller = new Scroller(context);
         mViewConfiguration = ViewConfiguration.get(context);
 
@@ -159,7 +147,6 @@ public class BrokenLineView extends View {
         initSize(context);
 
         initPaint(context);
-
     }
 
     @Override
@@ -466,11 +453,11 @@ public class BrokenLineView extends View {
 
             //先画一个颜色为背景颜色的实心圆覆盖折线拐角
             mCirclePaint.setStyle(Paint.Style.FILL_AND_STROKE);
-            mCirclePaint.setColor(mBackgroundColor);
+            mCirclePaint.setColor(DEFAULT_BULE);
             canvas.drawCircle(x, y, mPointRadius + dp2pxF(getContext(), 1), mCirclePaint);
             //再画出正常的空心圆
-            mCirclePaint.setStyle(Paint.Style.STROKE);
-            mCirclePaint.setColor(DEFAULT_BULE);
+            mCirclePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+            mCirclePaint.setColor(mBackgroundColor);
             canvas.drawCircle(x, y, mPointRadius, mCirclePaint);
 
         }

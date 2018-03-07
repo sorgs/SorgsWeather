@@ -1,12 +1,12 @@
 package com.sorgs.sorgsweather.ui.fragment;
 
-import com.sorgs.sorgsweather.ui.activity.MainActivity;
-import com.sorgs.sorgsweather.ui.activity.WeatherActivity;
-import com.sorgs.sorgsweather.http.OkHttp;
 import com.sorgs.sorgsweather.R;
 import com.sorgs.sorgsweather.db.City;
 import com.sorgs.sorgsweather.db.County;
 import com.sorgs.sorgsweather.db.Province;
+import com.sorgs.sorgsweather.http.OkHttp;
+import com.sorgs.sorgsweather.ui.activity.MainActivity;
+import com.sorgs.sorgsweather.ui.activity.WeatherActivity;
 import com.sorgs.sorgsweather.utils.Constant;
 import com.sorgs.sorgsweather.utils.HandleUtility;
 

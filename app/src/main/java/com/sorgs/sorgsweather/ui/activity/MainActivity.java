@@ -1,21 +1,20 @@
 package com.sorgs.sorgsweather.ui.activity;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.sorgs.sorgsweather.R;
+import com.sorgs.sorgsweather.domian.WeatherJson;
+import com.sorgs.sorgsweather.http.OkHttp;
+import com.sorgs.sorgsweather.utils.Constant;
+import com.sorgs.sorgsweather.utils.HandleUtility;
+import com.sorgs.sorgsweather.utils.Sputils;
+import com.sorgs.sorgsweather.utils.GetCache;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
-
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.sorgs.sorgsweather.http.OkHttp;
-import com.sorgs.sorgsweather.R;
-import com.sorgs.sorgsweather.domian.WeatherJson;
-import com.sorgs.sorgsweather.utils.Constant;
-import com.sorgs.sorgsweather.utils.Sputils;
-import com.sorgs.sorgsweather.utils.HandleUtility;
-import com.sorgs.sorgsweather.utils.GetCache;
-
 
 import java.io.IOException;
 
@@ -90,7 +89,7 @@ public class MainActivity extends BaseActivity {
      * @param locationStr 传入的经纬度
      */
     private void sendService(String locationStr) {
-        OkHttp.sendOkHttpRequest(Constant.WEATHER_URL + locationStr + Constant.WEATHER_KEY, new Callback() {
+       OkHttp.sendOkHttpRequest(Constant.WEATHER_URL + locationStr + Constant.WEATHER_KEY, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(new Runnable() {
