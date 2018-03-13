@@ -5,24 +5,24 @@
                 android:layout_margin="15dp">
 
     <TextView
-        android:id="@+id/degree_text"
-        style="@style/textView"
-        android:layout_centerHorizontal="true"
-        android:textSize="27sp"/>
+            android:id="@+id/degree_text"
+            style="@style/textView"
+            android:layout_centerHorizontal="true"
+            android:textSize="27sp"/>
 
     <ImageView
-        android:id="@+id/iv_weather"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/degree_text"
-        android:layout_marginLeft="10dp"
-        android:layout_toEndOf="@+id/degree_text"/>
+            android:id="@+id/iv_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/degree_text"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/degree_text"/>
 
     <TextView
-        android:id="@+id/weather_info_text"
-        style="@style/textView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="37dp"
-        android:textSize="20sp"/>
+            android:id="@+id/weather_info_text"
+            style="@style/textView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="37dp"
+            android:textSize="20sp"/>
 
 </RelativeLayout>

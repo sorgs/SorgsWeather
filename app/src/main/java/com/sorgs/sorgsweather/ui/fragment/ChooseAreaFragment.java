@@ -4,36 +4,33 @@ import com.sorgs.sorgsweather.R;
 import com.sorgs.sorgsweather.db.City;
 import com.sorgs.sorgsweather.db.County;
 import com.sorgs.sorgsweather.db.Province;
-import com.sorgs.sorgsweather.http.OkHttp;
+import com.sorgs.sorgsweather.db.QueryCityFromDb;
+import com.sorgs.sorgsweather.model.CityViewModel;
 import com.sorgs.sorgsweather.ui.activity.MainActivity;
 import com.sorgs.sorgsweather.ui.activity.WeatherActivity;
-import com.sorgs.sorgsweather.utils.Constant;
-import com.sorgs.sorgsweather.utils.HandleUtility;
-
-import org.litepal.crud.DataSupport;
 
 import android.app.ProgressDialog;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
+import static com.sorgs.sorgsweather.db.QueryCityFromDb.LEVEL_CITY;
+import static com.sorgs.sorgsweather.db.QueryCityFromDb.LEVEL_COUNTY;
+import static com.sorgs.sorgsweather.db.QueryCityFromDb.LEVEL_PROVINCE;
 
 /**
  * Created by Sorgs
@@ -43,79 +40,56 @@ import okhttp3.Response;
 public class ChooseAreaFragment extends Fragment {
 
 
-    /**
-     * 省级
-     */
-    private static final int LEVEL_PROVINCE = 0;
-
-    /**
-     * 市级
-     */
-    private static final int LEVEL_CITY = 1;
-
-    /**
-     * 县级
-     */
-    private static final int LEVEL_COUNTY = 2;
-
-    private TextView title_text;
-    private Button back_button;
-    private ListView list_view;
+    private TextView titleText;
+    private Button backButton;
+    private ListView listView;
     private ArrayAdapter<String> adapter;
 
-    private List<String> dataList = new ArrayList<>();
+    private List<String> mCityName = new ArrayList<>();
+    private List<String> mProvinceName = new ArrayList<>();
+    private List<String> mCountyName = new ArrayList<>();
+    private List<String> mData = new ArrayList<>();
+    private List<String> mCityId = new ArrayList<>();
+    private List<String> mProvinceId = new ArrayList<>();
+    private List<String> mWeatherId = new ArrayList<>();
 
     /**
      * 当前选择的级别
      */
-    private int currentLevel;
+    private int currentLevel = LEVEL_PROVINCE;
 
     /**
-     * 选中的省份
+     * 选中的省份的id
      */
-    private Province selectedProvince;
+    private String mSelectedProvinceId;
 
     /**
-     * 选中的市
+     * 选中的市的id
      */
-    private City selectedCity;
+    private String mSelectedCityId;
 
-
-    /**
-     * 省列表
-     */
-    private List<Province> provinceList;
-
-    /**
-     * 市列表
-     */
-    private List<City> cityList;
-
-    /**
-     * 县列表
-     */
-    private List<County> countyList;
 
     private ProgressDialog progressDialog;
 
-    /**
-     * 省级是否从服务查询过
-     */
-    private boolean isProvinceFalge = true;
+    private CityViewModel mCityViewModel;
+    private String mSelectedProvinceName;
+    private String mSelectedCityName;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //把碎片加载进来
         View view = inflater.inflate(R.layout.choose_area, container, false);
 
-        title_text = (TextView) view.findViewById(R.id.title_text);
-        back_button = (Button) view.findViewById(R.id.back_button);
-        list_view = (ListView) view.findViewById(R.id.list_view);
+        titleText = view.findViewById(R.id.title_text);
+        backButton = view.findViewById(R.id.back_button);
+        listView = view.findViewById(R.id.list_view);
 
-        adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_list_item_1, dataList);
+        adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_1, mData);
 
-        list_view.setAdapter(adapter);
+        listView.setAdapter(adapter);
+
+        mCityViewModel = ViewModelProviders.of(this).get(CityViewModel.class);
 
         return view;
     }
@@ -124,182 +98,147 @@ public class ChooseAreaFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        list_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (currentLevel == LEVEL_PROVINCE) {
-                    selectedProvince = provinceList.get(position);
-                    queryCities();
-                } else if (currentLevel == LEVEL_CITY) {
-                    selectedCity = cityList.get(position);
-                    queryCounties();
-                } else if (currentLevel == LEVEL_COUNTY) {
-                    String weatherId = countyList.get(position).weatherId;
-                    if (getActivity() instanceof MainActivity) {
-                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                        intent.putExtra("weather_id", weatherId);
-                        startActivity(intent);
-                        getActivity().finish();
-                    } else if (getActivity() instanceof WeatherActivity) {
-                        WeatherActivity activity = (WeatherActivity) getActivity();
-                        activity.drawer_layout.closeDrawer(GravityCompat.START);
-                        activity.swipe_refresh.setRefreshing(true);
-                        activity.requestWeather(weatherId);
-                    }
-
+        listView.setOnItemClickListener((parent, view, position, id) -> {
+            closeProgressDialog();
+            if (currentLevel == LEVEL_PROVINCE) {
+                //选定城市之后，把级别换位省级
+                currentLevel = LEVEL_CITY;
+                mSelectedProvinceName = mProvinceName.get(position);
+                titleText.setText(mSelectedProvinceName);
+                backButton.setVisibility(View.VISIBLE);
+                mSelectedProvinceId = mProvinceId.get(position);
+                initData(mSelectedProvinceId);
+            } else if (currentLevel == LEVEL_CITY) {
+                mSelectedCityName = mCityName.get(position);
+                titleText.setText(mSelectedCityName);
+                currentLevel = LEVEL_COUNTY;
+                backButton.setVisibility(View.VISIBLE);
+                mSelectedCityId = mCityId.get(position);
+                initData(mSelectedCityId);
+            } else if (currentLevel == LEVEL_COUNTY) {
+                String weatherId = mWeatherId.get(position);
+                if (getActivity() instanceof MainActivity) {
+                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                    intent.putExtra("weather_id", weatherId);
+                    startActivity(intent);
+                    getActivity().finish();
+                } else if (getActivity() instanceof WeatherActivity) {
+                    WeatherActivity activity = (WeatherActivity) getActivity();
+                    activity.mDrawerLayout.closeDrawer(GravityCompat.START);
+                    activity.mSwipeRefresh.setRefreshing(true);
+                    activity.initData(weatherId);
                 }
+
             }
         });
 
-        back_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //点击返回发现再根据等级去查询
-                if (currentLevel == LEVEL_COUNTY) {
-                    queryCities();
-                } else if (currentLevel == LEVEL_CITY) {
-                    queryProvinces();
-                }
+        backButton.setOnClickListener(v -> {
+            if (currentLevel == LEVEL_COUNTY) {
+                currentLevel = LEVEL_CITY;
+                titleText.setText(mSelectedProvinceName);
+                backButton.setVisibility(View.VISIBLE);
+                initData(mSelectedCityId);
+            } else if (currentLevel == LEVEL_CITY) {
+                currentLevel = LEVEL_PROVINCE;
+                initData(mSelectedProvinceId);
+                backButton.setVisibility(View.GONE);
+                titleText.setText("中国");
             }
         });
 
-        queryProvinces();
+        titleText.setText("中国");
+        backButton.setVisibility(View.GONE);
+        initData(null);
     }
 
-    /**
-     * 查询所有的市，先从数据库查出
-     */
-    private void queryProvinces() {
-        title_text.setText("中国");
-        //这一层不能返回就，必须往下查
-        back_button.setVisibility(View.GONE);
-        provinceList = DataSupport.findAll(Province.class);
-        if (provinceList.size() > 0) {
-            //数据库有内容
-            dataList.clear();//清除之前的数据
-            for (Province province :
-                    provinceList) {
-                dataList.add(province.provinceName);
-            }
-            adapter.notifyDataSetChanged();
-            list_view.setSelection(0);//ListView定位到指定Item的位置
-            currentLevel = LEVEL_PROVINCE;//选定城市之后，把级别换位省级
-        }
-        if (isProvinceFalge) {
-            queryFromServer(Constant.CITIES, "province");
-            isProvinceFalge = false;
-        }
-
-    }
-
-    /**
-     * 查询选中省内所有的市，先从数据库查出，再去服务器更新
-     */
-    private void queryCities() {
-        title_text.setText(selectedProvince.provinceName);
-        //有市级就可以返回
-        back_button.setVisibility(View.VISIBLE);
-        cityList = DataSupport.where("provinceid = ?", String.valueOf(selectedProvince.id)).find(City.class);
-        if (cityList.size() > 0) {
-            //数据库有内容
-            dataList.clear();//清除之前的数据
-            for (City city :
-                    cityList) {
-                dataList.add(city.cityName);
-            }
-            adapter.notifyDataSetChanged();
-            list_view.setSelection(0);//ListView定位到指定Item的位置
-            currentLevel = LEVEL_CITY;//选定城市之后，把级别换位市级
-        } else {
-            int provinceCode = selectedProvince.provinceCode;
-            queryFromServer(Constant.CITIES + "/" + provinceCode, "city");
-        }
-
-    }
-
-    /**
-     * 查询选中市内所有的县，先从数据库查出，再去服务器更新
-     */
-    private void queryCounties() {
-        title_text.setText(selectedCity.cityName);
-        //有市级就可以返回
-        back_button.setVisibility(View.VISIBLE);
-        countyList = DataSupport.where("cityid = ?", String.valueOf(selectedCity.id)).find(County.class);
-        if (countyList.size() > 0) {
-            //数据库有内容
-            dataList.clear();//清除之前的数据
-            for (County county :
-                    countyList) {
-                dataList.add(county.countyName);
-            }
-            adapter.notifyDataSetChanged();
-            list_view.setSelection(0);//ListView定位到指定Item的位置
-            currentLevel = LEVEL_COUNTY;//选定城市之后，把级别换位县级
-        } else {
-            int provinceCode = selectedProvince.provinceCode;
-            int cityCode = selectedCity.cityCode;
-            queryFromServer(Constant.CITIES + "/" + provinceCode + "/" + cityCode, "county");
-        }
-
-    }
-
-    /**
-     * 查询省市县数据
-     *
-     * @param address 传入地址
-     * @param type    传入类型
-     */
-    private void queryFromServer(String address, final String type) {
+    private void initData(String cityID) {
         showProgressDialog();
-        OkHttp.sendOkHttpRequest(address, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                //切换为主线程，告知加载失败
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        closeProgressDialog();
-                        Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String string = response.body().string();
-                boolean result = false;
-                //根据类型查询
-                if ("province".equals(type)) {
-                    //传入解析
-                    result = HandleUtility.handleProvinceResponse(string);
-                } else if ("city".equals(type)) {
-                    //传入解析
-                    result = HandleUtility.handleCityResponse(string, selectedProvince.id);
-                } else if ("county".equals(type)) {
-                    //传入解析
-                    result = HandleUtility.handleCountyResponse(string, selectedCity.id);
-                }
-
-                //更新UI
-                if (result) {
-                    //切换为主线程
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            closeProgressDialog();
-                            if ("province".equals(type)) {
-                                queryProvinces();
-                            } else if ("city".equals(type)) {
-                                queryCities();
-                            } else if ("county".equals(type)) {
-                                queryCounties();
+        QueryCityFromDb
+                .queryCity(cityID, currentLevel)
+                .subscribe(object -> {
+                    mData.clear();//清除之前的数据
+                    switch (currentLevel) {
+                        case LEVEL_PROVINCE:
+                            //省级
+                            mProvinceName.clear();
+                            mProvinceId.clear();
+                            for (Province province : (List<Province>) object) {
+                                mProvinceName.add(province.provinceName);
+                                mData.add(province.provinceName);
+                                mProvinceId.add(String.valueOf(province.id));
                             }
-                        }
-                    });
-                }
-            }
-        });
+                            break;
+                        case LEVEL_CITY:
+                            //市级
+                            mCityName.clear();
+                            mCityId.clear();
+                            for (City city : (List<City>) object) {
+                                mCityName.add(city.cityName);
+                                mData.add(city.cityName);
+                                mCityId.add(String.valueOf(city.cityCode));
+                            }
+                            break;
+                        case LEVEL_COUNTY:
+                            //县级
+                            mCountyName.clear();
+                            mWeatherId.clear();
+                            for (County county : (List<County>) object) {
+                                mCountyName.add(county.countyName);
+                                mData.add(county.countyName);
+                                //直接存储天气id
+                                mWeatherId.add(county.weatherId);
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    adapter.notifyDataSetChanged();
+                    //ListView定位到指定Item的位置
+                    listView.setSelection(0);
+                    closeProgressDialog();
+                }, throwable -> {
+                    String type = throwable.toString().substring(throwable.toString().lastIndexOf(": ") + 1).trim();
+                    //获取失败，从网络请求
+                    switch (type) {
+                        case LEVEL_PROVINCE + "":
+                            //省级查询失败，网络获取
+                            mCityViewModel
+                                    .requestHttp("", "province")
+                                    .subscribe(aBoolean -> {
+                                        if (aBoolean) {
+                                            //查询成功
+                                            initData(null);
+                                        }
+                                    });
+                            break;
+                        case LEVEL_CITY + "":
+                            //市级查询失败，网络获取
+                            mCityViewModel
+                                    .requestHttp(mSelectedProvinceId, "city")
+                                    .subscribe(aBoolean -> {
+                                        if (aBoolean) {
+                                            //查询成功
+                                            initData(mSelectedProvinceId);
+                                        }
+                                    });
+                            break;
+                        case LEVEL_COUNTY + "":
+                            //县级查询失败，网络获取
+                            mCityViewModel
+                                    .requestHttp(mSelectedProvinceId + "/" + mSelectedCityId, "county")
+                                    .subscribe(aBoolean -> {
+                                        if (aBoolean) {
+                                            //查询成功
+                                            initData(mSelectedCityId);
+                                        }
+                                    });
+                            break;
+                        default:
+                            closeProgressDialog();
+                            break;
+                    }
 
+                });
     }
 
 
@@ -324,4 +263,12 @@ public class ChooseAreaFragment extends Fragment {
         }
         progressDialog.show();
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        closeProgressDialog();
+    }
+
+
 }

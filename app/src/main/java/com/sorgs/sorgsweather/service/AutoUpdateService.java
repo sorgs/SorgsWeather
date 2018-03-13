@@ -2,23 +2,25 @@ package com.sorgs.sorgsweather.service;
 
 import com.sorgs.sorgsweather.domian.WeatherJson;
 import com.sorgs.sorgsweather.http.OkHttp;
+import com.sorgs.sorgsweather.model.WeatherViewModel;
+import com.sorgs.sorgsweather.ui.activity.MyApplication;
 import com.sorgs.sorgsweather.utils.Constant;
-import com.sorgs.sorgsweather.utils.HandleUtility;
-import com.sorgs.sorgsweather.utils.Sputils;
-import com.sorgs.sorgsweather.utils.GetCache;
+import com.sorgs.sorgsweather.utils.GsonUtils;
+import com.sorgs.sorgsweather.utils.SharedPreferencesUtils;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.IBinder;
-import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
-import okhttp3.Call;
-import okhttp3.Callback;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Response;
 
 /**
@@ -30,80 +32,86 @@ import okhttp3.Response;
 
 public class AutoUpdateService extends Service {
 
+    private Disposable mDisposable;
+    private UpdateListener mUpdateListener;
+    private WeatherViewModel mWeatherViewModel;
+
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return null;
+        return new UpDataBinder();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        updateWeather();
-        updatePic();
-        //设置更新时间
-        int anHour = 3 * 60 * 60 * 1000;//设置3小时更新一次
-        //开始延迟服务
-        AlarmManager systemService = (AlarmManager) getSystemService(ALARM_SERVICE);
-        long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
-        Intent i = new Intent(this, AutoUpdateService.class);
-        PendingIntent service = PendingIntent.getService(this, 0, i, 0);
-        systemService.cancel(service);
-        systemService.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, service);
         return super.onStartCommand(intent, flags, startId);
+
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        //后台更新数据
+
+        autoUpdateWeather();
     }
 
     /**
-     * 更新背景图
+     * 每隔三个小时获取最新数据
      */
-    private void updatePic() {
-        OkHttp.sendOkHttpRequest(Constant.PIC_URL, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
+    private void autoUpdateWeather() {
+        mDisposable = Flowable
+                .interval(3, TimeUnit.HOURS)
+                .subscribeOn(Schedulers.io())
+                .map(aLong -> SharedPreferencesUtils.getString(MyApplication.getInstance().mContext, Constant.WEATHER, null))
+                .filter(s -> !TextUtils.isEmpty(s))
+                .map(s -> {
+                    String cityId = null;
+                    WeatherJson weatherJson = GsonUtils.getGsonInstance().fromJson(s, WeatherJson.class);
+                    for (WeatherJson.HeWeather5Bean weather5Bean : weatherJson.getHeWeather5()) {
+                        cityId = weather5Bean.getBasic().getId();
+                    }
+                    return cityId;
+                })
+                .filter(s -> !TextUtils.isEmpty(s))
+                .map(s -> {
+                    String weatherJson = null;
+                    Response response = OkHttp.sendOkHttpRequestGet(Constant.WEATHER_URL + s + Constant.WEATHER_KEY);
+                    if (response.isSuccessful() || response.body() != null) {
+                        weatherJson = response.body().string();
+                        SharedPreferencesUtils.putString(MyApplication.getInstance().mContext, Constant.WEATHER_KEY, weatherJson);
+                    }
+                    return weatherJson;
+                }).filter(s -> !TextUtils.isEmpty(s))
+                .map(s -> GsonUtils.getGsonInstance().fromJson(s, WeatherJson.class))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(weatherJson -> mUpdateListener.UpDate(weatherJson));
+    }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String pic = response.body().string();
-                //保存缓存的图片
-                if (!TextUtils.isEmpty(pic)) {
-                    Sputils.putString(getApplication(), Constant.PIC, pic);
-                }
-            }
-        });
+
+    public interface UpdateListener {
+        void UpDate(WeatherJson weatherJson);
     }
 
     /**
-     * 跟新天气信息
+     * 注册回调接口的方法，供外部调用
      */
-    private void updateWeather() {
-        String weather = GetCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
-        if (!TextUtils.isEmpty(weather)) {
-            //存在缓存，就直接去解析
-            WeatherJson weatherJson = HandleUtility.handleWeatherResponse(Sputils.getString(getApplicationContext(), Constant.WEATHER, null));
-            assert weatherJson != null;
-            for (WeatherJson.HeWeather5Bean heWeatherBean :
-                    weatherJson.getHeWeather5()) {
-                if ("ok".equals(heWeatherBean.getStatus())) {
-                    String weatherId = heWeatherBean.getBasic().getCity();
-                    OkHttp.sendOkHttpRequest(Constant.WEATHER_URL + weatherId + Constant.WEATHER_KEY, new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            e.printStackTrace();
-                        }
+    public void setUpDataListener(UpdateListener updateListener) {
+        mUpdateListener = updateListener;
+    }
 
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            String string = response.body().string();
-                            //是否能获取城市id 缓存Json数据
-                            if (!TextUtils.isEmpty(GetCache.getCityID(string))) {
-                                Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
-                            }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
+        }
+        stopSelf();
+    }
 
-                        }
-                    });
-                }
-            }
-
+    public class UpDataBinder extends Binder {
+        public AutoUpdateService getService() {
+            return AutoUpdateService.this;
         }
     }
 }

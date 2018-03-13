@@ -2,15 +2,13 @@ apply plugin: 'com.android.application'
 
 android {
     useLibrary 'org.apache.http.legacy'
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 27
     defaultConfig {
         applicationId "com.sorgs.sorgsweather"
         minSdkVersion 19
-        targetSdkVersion 25
+        targetSdkVersion 27
         versionCode 5
         versionName "5.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -20,14 +18,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-}
-apply plugin: 'com.bugtags.library.plugin'
-bugtags {
-    //自动上传符号表功能配置，如果需要根据 build varint 配置，请参考帮助中心->符号表->Android 符号表->配置自动上传符号表
-    appKey "a4b7f37e42f219b0f125024ed560807d"  //这里是你的 appKey
-    appSecret "41cf1736ea3d77ff0951d98488575f7d"    //这里是你的 appSecret，管理员在设置页可以查看
-    mappingUploadEnabled true
-
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -35,13 +29,26 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.android.support:appcompat-v7:27.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    testCompile 'junit:junit:4.12'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.squareup.okhttp3:okhttp:3.6.0'
-    compile 'org.litepal.android:core:1.4.1'
+
+    implementation "android.arch.lifecycle:viewmodel:1.1.0"
+    implementation "android.arch.lifecycle:extensions:1.1.0"
+
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+
+    compile 'io.reactivex.rxjava2:rxandroid:2.0.2'
+
+
+    compile 'com.github.bumptech.glide:glide:4.4.0'
+
+    compile 'com.google.code.gson:gson:2.8.2'
+
+    compile 'org.litepal.android:core:1.6.1'
+
     compile 'me.weyye.hipermission:library:1.0.2'
-    compile 'com.bugtags.library:bugtags-lib:latest.integration'
+
 }

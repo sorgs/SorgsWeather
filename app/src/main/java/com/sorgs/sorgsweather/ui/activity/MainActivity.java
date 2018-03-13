@@ -4,26 +4,18 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.sorgs.sorgsweather.R;
-import com.sorgs.sorgsweather.domian.WeatherJson;
-import com.sorgs.sorgsweather.http.OkHttp;
 import com.sorgs.sorgsweather.utils.Constant;
-import com.sorgs.sorgsweather.utils.HandleUtility;
-import com.sorgs.sorgsweather.utils.Sputils;
 import com.sorgs.sorgsweather.utils.GetCache;
+import com.sorgs.sorgsweather.utils.SharedPreferencesUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-import java.io.IOException;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.Response;
-
-
-public class MainActivity extends BaseActivity {
+public class MainActivity extends AppCompatActivity {
     private LocationClient mLocationClient;
 
 
@@ -35,13 +27,12 @@ public class MainActivity extends BaseActivity {
         mLocationClient.registerLocationListener(new MyLocationListener());
         setContentView(R.layout.activity_main);
 
-
         String position = getIntent().getStringExtra("position");
 
         if (TextUtils.isEmpty(position)) {
-            if (!TextUtils.isEmpty(GetCache.getCityID(Sputils.getString(getApplicationContext(), Constant.WEATHER, null)))) {
+            if (!TextUtils.isEmpty(GetCache.getCityID(SharedPreferencesUtils.getString(getApplicationContext(), Constant.WEATHER, null)))) {
                 //有缓存，不需要再去定位
-                GoWeather();
+                goWeather();
             } else {
                 //尝试定位
                 initPosition();
@@ -63,7 +54,7 @@ public class MainActivity extends BaseActivity {
             } else {
                 Toast.makeText(getApplicationContext(), "定位失败", Toast.LENGTH_SHORT).show();
                 //进入主页
-                GoWeather();
+                goWeather();
             }
         }
 
@@ -72,7 +63,6 @@ public class MainActivity extends BaseActivity {
 
         }
     }
-
 
     /**
      * 获取地理位置
@@ -87,61 +77,15 @@ public class MainActivity extends BaseActivity {
      * @param locationStr 传入的经纬度
      */
     private void sendService(String locationStr) {
-       OkHttp.sendOkHttpRequest(Constant.WEATHER_URL + locationStr + Constant.WEATHER_KEY, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "定位失败", Toast.LENGTH_SHORT).show();
-                        //进入主页
-                        GoWeather();
-
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String string = response.body().string();
-                HandleUtility.handleWeatherResponse(string);
-                //缓存Json数据
-                if (string != null) {
-                    Sputils.putString(getApplicationContext(), Constant.WEATHER, string);
-                }
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        //进入主页
-                        GoWeather();
-                    }
-                });
-            }
-        });
-
+        Intent intent = new Intent(this, WeatherActivity.class);
+        intent.putExtra("weather_id", locationStr);
+        startActivity(intent);
+        finish();
     }
 
-    private void GoWeather() {
-
-        //获取数据缓存
-        String WeatherCache = Sputils.getString(getApplicationContext(), Constant.WEATHER, null);
-        if (!TextUtils.isEmpty(WeatherCache)) {
-            //存在缓存，就去尝试解析
-            WeatherJson weatherJson = HandleUtility.handleWeatherResponse(WeatherCache);
-            assert weatherJson != null;
-            for (WeatherJson.HeWeather5Bean heWeatherBean :
-                    weatherJson.getHeWeather5()) {
-                if ("ok".equals(heWeatherBean.getStatus())) {
-                    //是否之前选择过城市，有选择就直接跳过
-                    startActivity(new Intent(getApplicationContext(), WeatherActivity.class));
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), "定位失败，请选择城市", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
-        }
+    private void goWeather() {
+        startActivity(new Intent(getApplicationContext(), WeatherActivity.class));
+        finish();
     }
 
 

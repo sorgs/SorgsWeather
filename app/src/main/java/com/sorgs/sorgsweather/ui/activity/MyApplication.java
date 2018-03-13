@@ -1,11 +1,9 @@
 package com.sorgs.sorgsweather.ui.activity;
 
+import org.litepal.LitePal;
+
 import android.app.Application;
 import android.content.Context;
-
-import com.bugtags.library.Bugtags;
-
-import org.litepal.LitePal;
 
 /**
  * 防止app崩溃，让上传错误信息
@@ -15,18 +13,22 @@ import org.litepal.LitePal;
 
 public class MyApplication extends Application {
 
-    private static Context context;
+    public Context mContext;
+    private static MyApplication mApplication;
+
+    public static MyApplication getInstance() {
+        return mApplication;
+    }
 
     @Override
     public void onCreate() {
+
         super.onCreate();
+        mApplication = this;
 
-        //在这里初始化
-        Bugtags.start("a4b7f37e42f219b0f125024ed560807d", this, Bugtags.BTGInvocationEventNone);
+        mContext = getApplicationContext();
 
-        context = getApplicationContext();
-
-        LitePal.initialize(context);
+        LitePal.initialize(mContext);
 
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 
@@ -39,9 +41,11 @@ public class MyApplication extends Application {
                 } catch (InterruptedException e1) {
                     e1.printStackTrace();
                 }
-                System.exit(0);
+                //System.exit(0);
             }
 
         });
     }
+
+
 }

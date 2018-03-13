@@ -1,11 +1,12 @@
 package com.sorgs.sorgsweather.ui.activity;
 
+import com.sorgs.sorgsweather.R;
+
 import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
-
-import com.sorgs.sorgsweather.R;
+import android.support.v7.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ import me.weyye.hipermission.PermissonItem;
  * on 2017/5/13.
  */
 
-public class StartActivity extends BaseActivity {
+public class StartActivity extends AppCompatActivity {
 
 
     @Override
@@ -28,28 +29,28 @@ public class StartActivity extends BaseActivity {
         setContentView(R.layout.activity_start);
 
 
-        initPermisson();
+        initPermission();
     }
 
 
     /**
      * 申请权限
      */
-    private void initPermisson() {
-        List<PermissonItem> permissonItems = new ArrayList<PermissonItem>();
+    private void initPermission() {
+        List<PermissonItem> permissionItems = new ArrayList<>();
 
 
-        permissonItems.add(new PermissonItem(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        permissionItems.add(new PermissonItem(Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 "SD卡读写", R.mipmap.i_sd));
 
-        permissonItems.add(new PermissonItem(Manifest.permission.READ_PHONE_STATE,
+        permissionItems.add(new PermissonItem(Manifest.permission.READ_PHONE_STATE,
                 "手机状态", R.mipmap.i_phone));
 
-        permissonItems.add(new PermissonItem(Manifest.permission.ACCESS_COARSE_LOCATION,
+        permissionItems.add(new PermissonItem(Manifest.permission.ACCESS_COARSE_LOCATION,
                 "地理位置", R.mipmap.i_location));
 
         HiPermission.create(StartActivity.this).title("亲爱的上帝")
-                .permissions(permissonItems)
+                .permissions(permissionItems)
                 .filterColor(ResourcesCompat.getColor(getResources(),
                         R.color.colorWhile, getTheme()))//图标的颜色
                 .msg("为了保护世界的和平，开启这些权限吧！\n我们一起拯救世界！")

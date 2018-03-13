@@ -1,0 +1,58 @@
+package com.sorgs.sorgsweather.model;
+
+
+import com.sorgs.sorgsweather.domian.WeatherJson;
+import com.sorgs.sorgsweather.http.OkHttp;
+import com.sorgs.sorgsweather.ui.activity.MyApplication;
+import com.sorgs.sorgsweather.utils.Constant;
+import com.sorgs.sorgsweather.utils.GsonUtils;
+import com.sorgs.sorgsweather.utils.SharedPreferencesUtils;
+
+import android.arch.lifecycle.ViewModel;
+import android.text.TextUtils;
+
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.Response;
+
+
+public class WeatherViewModel extends ViewModel {
+
+    /**
+     * 加载天气数据
+     */
+    public Observable<WeatherJson> getWeather(String city) {
+        return Observable.create((ObservableOnSubscribe<String>) emitter -> {
+            Response response = OkHttp.sendOkHttpRequestGet(Constant.WEATHER_URL + city + Constant.WEATHER_KEY);
+            emitter.onNext(response.body().string());
+        })
+                //每小时只接受一次
+                .throttleFirst(1, TimeUnit.HOURS)
+                .filter(s -> !TextUtils.isEmpty(s))
+                .doOnNext(s -> SharedPreferencesUtils.putString(MyApplication.getInstance().mContext, Constant.WEATHER_KEY, s))
+                .map(weather -> GsonUtils.getGsonInstance().fromJson(weather, WeatherJson.class))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * 获取每日图片
+     */
+    public Observable<String> getPic() {
+        return Observable.create((ObservableOnSubscribe<String>) emitter -> {
+            Response response = OkHttp.sendOkHttpRequestGet(Constant.PIC_URL);
+            emitter.onNext(response.body().string());
+        })
+                //每天只接受一次
+                .throttleFirst(1, TimeUnit.DAYS)
+                .filter(s -> !TextUtils.isEmpty(s))
+                .doOnNext(s -> SharedPreferencesUtils.putString(MyApplication.getInstance().mContext, Constant.PIC, s))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+}
