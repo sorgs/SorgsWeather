@@ -5,16 +5,23 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.sorgs.sorgsweather"
-        minSdkVersion 19
+        minSdkVersion 14
         targetSdkVersion 27
         versionCode 5
-        versionName "5.0"
+        versionName "5.2"
+
+        //设置支持中文，删除大部分其他语言
+        resConfigs "zh"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             //Zipalign优化
             zipAlignEnabled true
+            //去除无用资源
+            shrinkResources true
+            // 不显示Log
+            buildConfigField "boolean", "LOG_DEBUG", "false"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -26,9 +33,7 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+
     compile 'com.android.support:appcompat-v7:27.1.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
@@ -43,12 +48,11 @@ dependencies {
     compile 'io.reactivex.rxjava2:rxandroid:2.0.2'
 
 
-    compile 'com.github.bumptech.glide:glide:4.4.0'
+    compile 'com.github.bumptech.glide:glide:4.5.0'
 
     compile 'com.google.code.gson:gson:2.8.2'
 
     compile 'org.litepal.android:core:1.6.1'
 
-    compile 'me.weyye.hipermission:library:1.0.2'
-
+    compile 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.5@aar'
 }

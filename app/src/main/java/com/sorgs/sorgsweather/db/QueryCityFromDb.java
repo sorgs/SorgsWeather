@@ -2,8 +2,6 @@ package com.sorgs.sorgsweather.db;
 
 import org.litepal.crud.DataSupport;
 
-import android.util.Log;
-
 import java.util.List;
 
 import io.reactivex.Observable;
@@ -40,7 +38,6 @@ public class QueryCityFromDb {
      * @param currentLevel 当前需要查询的级别
      */
     public static Observable queryCity(String cityId, int currentLevel) {
-        Log.i("ChooseAreaFragment", "cityId: " + cityId + "currentLevel: " + currentLevel);
         return Observable.create(emitter -> {
             switch (currentLevel) {
                 case LEVEL_PROVINCE:
@@ -76,6 +73,7 @@ public class QueryCityFromDb {
                     break;
             }
             emitter.onComplete();
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
     }
 }

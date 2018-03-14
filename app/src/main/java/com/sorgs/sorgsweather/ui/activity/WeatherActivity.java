@@ -7,7 +7,6 @@ import com.sorgs.sorgsweather.domian.WeatherJson;
 import com.sorgs.sorgsweather.model.WeatherViewModel;
 import com.sorgs.sorgsweather.service.AutoUpdateService;
 import com.sorgs.sorgsweather.ui.widget.BrokenLineView;
-import com.sorgs.sorgsweather.utils.Constant;
 import com.sorgs.sorgsweather.utils.SharedPreferencesUtils;
 
 import android.arch.lifecycle.ViewModelProviders;
@@ -37,6 +36,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Unbinder;
 
 /**
  * Created by Sorgs
@@ -44,7 +44,6 @@ import butterknife.OnClick;
  */
 
 public class WeatherActivity extends AppCompatActivity {
-    private static final String TAG = "WeatherActivity";
 
     @BindView(R.id.pic_img)
     ImageView mPicImg;
@@ -92,6 +91,11 @@ public class WeatherActivity extends AppCompatActivity {
     public DrawerLayout mDrawerLayout;
 
     private WeatherViewModel mWeatherViewModel;
+    private Unbinder mBind;
+    /**
+     * 获取天气是否失败
+     */
+    private boolean isWeatherError = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,14 +108,14 @@ public class WeatherActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_weather);
-        ButterKnife.bind(this);
+        mBind = ButterKnife.bind(this);
         initView();
 
     }
 
     private void initView() {
         mWeatherViewModel = ViewModelProviders.of(this).get(WeatherViewModel.class);
-        showPic(SharedPreferencesUtils.getString(this, Constant.PIC, null));
+        showPic(SharedPreferencesUtils.getString(this, getString(R.string.pic), null));
         initData(getIntent().getStringExtra("weather_id"));
     }
 
@@ -131,9 +135,18 @@ public class WeatherActivity extends AppCompatActivity {
         mWeatherViewModel.getPic().subscribe(this::showPic);
 
         mSwipeRefresh.setOnRefreshListener(() -> {
-            mWeatherViewModel
-                    .getWeather(weatherId)
-                    .subscribe(this::showWeatherInfo);
+            if (isWeatherError) {
+                //重新获取定位
+                Intent intent = new Intent(getApplication(), LocationActivity.class);
+                intent.putExtra("position", true);
+                startActivity(intent);
+                finish();
+            } else {
+                mWeatherViewModel
+                        .getWeather(weatherId)
+                        .subscribe(this::showWeatherInfo);
+            }
+
             mWeatherViewModel.getPic().subscribe(this::showPic);
         });
 
@@ -159,6 +172,9 @@ public class WeatherActivity extends AppCompatActivity {
         for (WeatherJson.HeWeather5Bean heWeatherBean :
                 weatherJson.getHeWeather5()) {
             if ("ok".equals(heWeatherBean.getStatus())) {
+
+                isWeatherError = false;
+
                 //设置城市名字
                 mTitleCity.setText(heWeatherBean.getBasic().getCity());
 
@@ -258,7 +274,8 @@ public class WeatherActivity extends AppCompatActivity {
 
                 mWeatherLayout.setVisibility(View.VISIBLE);
             } else {
-                Toast.makeText(getApplicationContext(), "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                isWeatherError = true;
             }
 
         }
@@ -271,8 +288,8 @@ public class WeatherActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.nav_location:
                 //用户点击回到当前位置
-                Intent intent = new Intent(getApplication(), MainActivity.class);
-                intent.putExtra("position", "true");
+                Intent intent = new Intent(getApplication(), LocationActivity.class);
+                intent.putExtra("position", true);
                 startActivity(intent);
                 finish();
                 break;
@@ -298,14 +315,18 @@ public class WeatherActivity extends AppCompatActivity {
         }
     };
 
-
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mSwipeRefresh.isRefreshing()) {
+    protected void onStop() {
+        super.onStop();
+        if (mBind != null) {
+            mBind.unbind();
+        }
+        if (mSwipeRefresh != null && mSwipeRefresh.isRefreshing()) {
             mSwipeRefresh.setRefreshing(false);
         }
-        unbindService(mUpDataServiceConnection);
+        if (mUpDataServiceConnection != null) {
+            unbindService(mUpDataServiceConnection);
+        }
     }
 
 

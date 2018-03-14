@@ -1,10 +1,10 @@
 package com.sorgs.sorgsweather.service;
 
+import com.sorgs.sorgsweather.R;
 import com.sorgs.sorgsweather.domian.WeatherJson;
 import com.sorgs.sorgsweather.http.OkHttp;
 import com.sorgs.sorgsweather.model.WeatherViewModel;
 import com.sorgs.sorgsweather.ui.activity.MyApplication;
-import com.sorgs.sorgsweather.utils.Constant;
 import com.sorgs.sorgsweather.utils.GsonUtils;
 import com.sorgs.sorgsweather.utils.SharedPreferencesUtils;
 
@@ -63,23 +63,25 @@ public class AutoUpdateService extends Service {
         mDisposable = Flowable
                 .interval(3, TimeUnit.HOURS)
                 .subscribeOn(Schedulers.io())
-                .map(aLong -> SharedPreferencesUtils.getString(MyApplication.getInstance().mContext, Constant.WEATHER, null))
+                .map(aLong -> SharedPreferencesUtils.getString(MyApplication.getInstance().mContext, getString(R.string.weather), null))
                 .filter(s -> !TextUtils.isEmpty(s))
                 .map(s -> {
                     String cityId = null;
                     WeatherJson weatherJson = GsonUtils.getGsonInstance().fromJson(s, WeatherJson.class);
                     for (WeatherJson.HeWeather5Bean weather5Bean : weatherJson.getHeWeather5()) {
-                        cityId = weather5Bean.getBasic().getId();
+                        if (weather5Bean.getStatus().equals("ok")) {
+                            cityId = weather5Bean.getBasic().getId();
+                        }
                     }
                     return cityId;
                 })
                 .filter(s -> !TextUtils.isEmpty(s))
                 .map(s -> {
                     String weatherJson = null;
-                    Response response = OkHttp.sendOkHttpRequestGet(Constant.WEATHER_URL + s + Constant.WEATHER_KEY);
+                    Response response = OkHttp.sendOkHttpRequestGet(getString(R.string.weather_url) + s + getString(R.string.weather_key));
                     if (response.isSuccessful() || response.body() != null) {
                         weatherJson = response.body().string();
-                        SharedPreferencesUtils.putString(MyApplication.getInstance().mContext, Constant.WEATHER_KEY, weatherJson);
+                        SharedPreferencesUtils.putString(MyApplication.getInstance().mContext, getString(R.string.weather), weatherJson);
                     }
                     return weatherJson;
                 }).filter(s -> !TextUtils.isEmpty(s))

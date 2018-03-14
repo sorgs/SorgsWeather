@@ -1,11 +1,12 @@
 package com.sorgs.sorgsweather.model;
 
 
+import com.sorgs.sorgsweather.R;
 import com.sorgs.sorgsweather.db.City;
 import com.sorgs.sorgsweather.db.County;
 import com.sorgs.sorgsweather.db.Province;
 import com.sorgs.sorgsweather.http.OkHttp;
-import com.sorgs.sorgsweather.utils.Constant;
+import com.sorgs.sorgsweather.ui.activity.MyApplication;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,7 +29,7 @@ public class CityViewModel extends ViewModel {
      */
     public Observable<Boolean> requestHttp(String cityId, String type) {
         return Observable.create((ObservableOnSubscribe<String>) emitter -> {
-            Response response = OkHttp.sendOkHttpRequestGet(Constant.CITIES + cityId);
+            Response response = OkHttp.sendOkHttpRequestGet(MyApplication.getInstance().mContext.getString(R.string.cities_url) + cityId);
             String s = response.body().string();
             emitter.onNext(s);
 

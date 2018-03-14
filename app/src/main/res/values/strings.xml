@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">Sorgs天气</string>
+
+    <!--http url-->
+    <!--查询中国城市的地址-->
+    <string name="cities_url">http://guolin.tech/api/china/</string>
+    <!--天气服务器url-->
+    <string name="weather_url">https://free-api.heweather.com/v5/weather?city=</string>
+    <!--天气服务器key-->
+    <string name="weather_key">&amp;key=6654a43435694d8e922377f3204d3756</string>
+    <!--背景图片的url地址-->
+    <string name="pic_url">http://guolin.tech/api/bing_pic</string>
+
+    <!--SharedPreferences Key-->
+    <!--保存天气json的key-->
+    <string name="weather">weather</string>
+    <!--保存天气json的key-->
+    <string name="pic">pic</string>
+
 </resources>

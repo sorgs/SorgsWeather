@@ -30,20 +30,15 @@ public class MyApplication extends Application {
 
         LitePal.initialize(mContext);
 
-        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-
-            @Override
-            public void uncaughtException(Thread t, Throwable e) {
-                //在获取到了未捕获的异常后,处理的方法
-                e.printStackTrace();
-                try {
-                    Thread.sleep(200);
-                } catch (InterruptedException e1) {
-                    e1.printStackTrace();
-                }
-                //System.exit(0);
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            //在获取到了未捕获的异常后,处理的方法
+            e.printStackTrace();
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e1) {
+                e1.printStackTrace();
             }
-
+            System.exit(0);
         });
     }
 

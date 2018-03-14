@@ -1,10 +1,10 @@
 package com.sorgs.sorgsweather.model;
 
 
+import com.sorgs.sorgsweather.R;
 import com.sorgs.sorgsweather.domian.WeatherJson;
 import com.sorgs.sorgsweather.http.OkHttp;
 import com.sorgs.sorgsweather.ui.activity.MyApplication;
-import com.sorgs.sorgsweather.utils.Constant;
 import com.sorgs.sorgsweather.utils.GsonUtils;
 import com.sorgs.sorgsweather.utils.SharedPreferencesUtils;
 
@@ -27,13 +27,14 @@ public class WeatherViewModel extends ViewModel {
      */
     public Observable<WeatherJson> getWeather(String city) {
         return Observable.create((ObservableOnSubscribe<String>) emitter -> {
-            Response response = OkHttp.sendOkHttpRequestGet(Constant.WEATHER_URL + city + Constant.WEATHER_KEY);
+            Response response = OkHttp.sendOkHttpRequestGet(MyApplication.getInstance().mContext.getString(R.string.weather_url)
+                    + city + MyApplication.getInstance().mContext.getString(R.string.weather_key));
             emitter.onNext(response.body().string());
         })
                 //每小时只接受一次
                 .throttleFirst(1, TimeUnit.HOURS)
                 .filter(s -> !TextUtils.isEmpty(s))
-                .doOnNext(s -> SharedPreferencesUtils.putString(MyApplication.getInstance().mContext, Constant.WEATHER_KEY, s))
+                .doOnNext(s -> SharedPreferencesUtils.putString(MyApplication.getInstance().mContext, MyApplication.getInstance().mContext.getString(R.string.weather), s))
                 .map(weather -> GsonUtils.getGsonInstance().fromJson(weather, WeatherJson.class))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
@@ -44,13 +45,13 @@ public class WeatherViewModel extends ViewModel {
      */
     public Observable<String> getPic() {
         return Observable.create((ObservableOnSubscribe<String>) emitter -> {
-            Response response = OkHttp.sendOkHttpRequestGet(Constant.PIC_URL);
+            Response response = OkHttp.sendOkHttpRequestGet(MyApplication.getInstance().mContext.getString(R.string.pic_url));
             emitter.onNext(response.body().string());
         })
                 //每天只接受一次
                 .throttleFirst(1, TimeUnit.DAYS)
                 .filter(s -> !TextUtils.isEmpty(s))
-                .doOnNext(s -> SharedPreferencesUtils.putString(MyApplication.getInstance().mContext, Constant.PIC, s))
+                .doOnNext(s -> SharedPreferencesUtils.putString(MyApplication.getInstance().mContext, MyApplication.getInstance().mContext.getString(R.string.pic), s))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

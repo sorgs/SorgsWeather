@@ -144,7 +144,21 @@
     public static <fields>;
 }
 
-#Glide
+#gson
+-keepattributes Signature
+# For using GSON @Expose annotation
+-keepattributes *Annotation*
+# Gson specific classes
+-keep class sun.misc.Unsafe { *; }
+# Gson的bead对象
+-keep class com.sorgs.sorgsweather.domian.* { *; }
+
+#butterknife
+-keep class butterknife.** { *; }
+-dontwarn butterknife.internal.**
+-keep class **$$ViewBinder { *; }
+
+#glide
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep public class * extends com.bumptech.glide.module.AppGlideModule
 -keep public enum com.bumptech.glide.load.ImageHeaderParser$** {
@@ -152,8 +166,13 @@
   public *;
 }
 
-# for DexGuard only
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
+#okhttp
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn org.conscrypt.**
+# A resource is loaded with a relative path so the package of this class must be preserved.
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
 
 #litepal
 -keep class org.litepal.** {
@@ -163,22 +182,26 @@
     *;
 }
 
-#gson
--keepattributes Signature
-# For using GSON @Expose annotation
--keepattributes *Annotation*
-# Gson specific classes
--keep class sun.misc.Unsafe { *; }
-# Gson的bead对象
--keep com.sorgs.sorgsweather.domian.WeatherJson
+-dontwarn sun.misc.**
+-keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
+ long producerIndex;
+ long consumerIndex;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueProducerNodeRef {
+ rx.internal.util.atomic.LinkedQueueNode producerNode;
+}
+-keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
+ rx.internal.util.atomic.LinkedQueueNode consumerNode;
+}
 
-#okhttp
--dontwarn okhttp3.**
--dontwarn okio.**
--dontwarn javax.annotation.**
--dontwarn org.conscrypt.**
-# A resource is loaded with a relative path so the package of this class must be preserved.
--keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
+#第三方
+#百度地图
+-libraryjars libs/BaiduLBS_Android.jar
+-keep class com.baidu.** {*;}
+-dontwarn com.baidu.**
+
+-keep class vi.com.gdi.bgl.android.java.** {*;}
+-dontwarn vi.com.gdi.bgl.android.java.**
 
 
 #移除Log类打印各个等级日志的代码，打正式包的时候可以做为禁log使用，这里可以作为禁止log打印的功能使用，另外的一种实现方案是通过BuildConfig.DEBUG的变量来控制
